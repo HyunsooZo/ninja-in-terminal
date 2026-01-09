@@ -54,21 +54,34 @@
 
     <!-- Center - Terminal Tabs -->
     <center>
-        <VBox styleClass="terminal-area">
-            <TabPane fx:id="terminalTabs" 
-                     VBox.vgrow="ALWAYS"
-                     styleClass="terminal-tabs"
-                     tabClosingPolicy="ALL_TABS">
-                <!-- Welcome Tab -->
-                <Tab text="Welcome" closable="false">
-                    <VBox alignment="CENTER" spacing="20" styleClass="welcome-tab">
-                        <Label text="🥷 TerminalInNinja" styleClass="welcome-title"/>
-                        <Label text="Double-click a host to connect" styleClass="welcome-subtitle"/>
-                        <Label text="or click '+ Host' to add a new connection" styleClass="welcome-hint"/>
-                    </VBox>
-                </Tab>
-            </TabPane>
-        </VBox>
+        <TabPane fx:id="mainTabs" 
+                 VBox.vgrow="ALWAYS"
+                 styleClass="main-tabs"
+                 tabClosingPolicy="UNAVAILABLE">
+            <!-- Hosts Tab -->
+            <Tab text="🏠 Hosts">
+                <VBox styleClass="terminal-area">
+                    <TabPane fx:id="terminalTabs" 
+                             VBox.vgrow="ALWAYS"
+                             styleClass="terminal-tabs"
+                             tabClosingPolicy="ALL_TABS">
+                        <!-- Welcome Tab -->
+                        <Tab text="Welcome" closable="false">
+                            <VBox alignment="CENTER" spacing="20" styleClass="welcome-tab">
+                                <Label text="🥷 TerminalInNinja" styleClass="welcome-title"/>
+                                <Label text="Double-click a host to connect" styleClass="welcome-subtitle"/>
+                                <Label text="or click '+ Host' to add a new connection" styleClass="welcome-hint"/>
+                            </VBox>
+                        </Tab>
+                    </TabPane>
+                </VBox>
+            </Tab>
+            
+            <!-- Snippets Tab -->
+            <Tab text="📝 Snippets">
+                <fx:include source="SnippetView.fxml"/>
+            </Tab>
+        </TabPane>
     </center>
 
     <!-- Bottom Status Bar -->

@@ -30,6 +30,7 @@ public class MainController implements Initializable {
     
     @FXML private BorderPane rootPane;
     @FXML private TreeView<Object> hostTree;
+    @FXML private TabPane mainTabs;
     @FXML private TabPane terminalTabs;
     @FXML private Button addHostBtn;
     @FXML private Button addGroupBtn;

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.ninja.terminal.controller.SnippetDialogController"
+      styleClass="snippet-dialog"
+      prefWidth="600"
+      prefHeight="500"
+      spacing="15"
+      stylesheets="@../css/dark-theme.css">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Name:" prefWidth="100" style="-fx-text-fill: #e0e0e0;"/>
+        <TextField fx:id="nameField" HBox.hgrow="ALWAYS" promptText="Snippet name"/>
+    </HBox>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Description:" prefWidth="100" style="-fx-text-fill: #e0e0e0;"/>
+        <TextField fx:id="descriptionField" HBox.hgrow="ALWAYS" promptText="Snippet description"/>
+    </HBox>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Package:" prefWidth="100" style="-fx-text-fill: #e0e0e0;"/>
+        <ComboBox fx:id="packageComboBox" HBox.hgrow="ALWAYS" promptText="Select package"/>
+    </HBox>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Tags:" prefWidth="100" style="-fx-text-fill: #e0e0e0;"/>
+        <TextField fx:id="tagsField" HBox.hgrow="ALWAYS" promptText="Comma-separated tags"/>
+    </HBox>
+
+    <VBox spacing="5" VBox.vgrow="ALWAYS">
+        <Label text="Script:" style="-fx-text-fill: #80cbc4; -fx-font-weight: bold;"/>
+        <TextArea fx:id="scriptTextArea" 
+                  VBox.vgrow="ALWAYS" 
+                  promptText="Enter your script here..."/>
+    </VBox>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="cancelBtn" text="Cancel" prefWidth="100"/>
+        <Button fx:id="saveBtn" text="Save" prefWidth="100" style="-fx-background-color: #45a049;"/>
+    </HBox>
+
+</VBox>
