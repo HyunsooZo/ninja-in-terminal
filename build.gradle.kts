@@ -1,6 +1,5 @@
 plugins {
     java
-    application
     id("org.openjfx.javafxplugin") version "0.1.0"
 }
 
@@ -20,7 +19,12 @@ java {
 
 javafx {
     version = "21"
-    modules = listOf("javafx.controls", "javafx.fxml", "javafx.graphics")
+    modules = listOf("javafx.controls", "javafx.fxml", "javafx.graphics", "javafx.swing")
+    
+    application {
+        mainModule.set("com.ninja.terminal")
+        mainClass.set("com.ninja.terminal.app.MainApp")
+    }
 }
 
 dependencies {
@@ -38,10 +42,6 @@ dependencies {
     // Logging
     implementation("org.slf4j:slf4j-api:2.0.12")
     implementation("ch.qos.logback:logback-classic:1.5.13")
-}
-
-application {
-    mainClass.set("com.ninja.terminal.app.MainApp")
 }
 
 tasks.jar {
