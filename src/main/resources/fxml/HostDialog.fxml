@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.ninja.terminal.controller.HostDialogController"
+      prefWidth="450"
+      spacing="15"
+      styleClass="dialog-pane">
+    
+    <padding>
+        <Insets top="20" right="25" bottom="20" left="25"/>
+    </padding>
+    
+    <!-- Name -->
+    <VBox spacing="5">
+        <Label text="Name (optional)" styleClass="field-label"/>
+        <TextField fx:id="nameField" 
+                   promptText="My Server"
+                   styleClass="dialog-field"/>
+    </VBox>
+    
+    <!-- Hostname -->
+    <VBox spacing="5">
+        <Label text="Hostname *" styleClass="field-label"/>
+        <TextField fx:id="hostnameField" 
+                   promptText="192.168.1.1 or server.example.com"
+                   styleClass="dialog-field"/>
+    </VBox>
+    
+    <!-- Port -->
+    <VBox spacing="5">
+        <Label text="Port" styleClass="field-label"/>
+        <TextField fx:id="portField" 
+                   promptText="22"
+                   prefWidth="100"
+                   styleClass="dialog-field"/>
+    </VBox>
+    
+    <!-- Username -->
+    <VBox spacing="5">
+        <Label text="Username *" styleClass="field-label"/>
+        <TextField fx:id="usernameField" 
+                   promptText="root"
+                   styleClass="dialog-field"/>
+    </VBox>
+    
+    <!-- Auth Type -->
+    <VBox spacing="10">
+        <Label text="Authentication" styleClass="field-label"/>
+        <HBox spacing="20">
+            <RadioButton fx:id="passwordAuth" text="Password" styleClass="auth-radio"/>
+            <RadioButton fx:id="keyAuth" text="Private Key" styleClass="auth-radio"/>
+        </HBox>
+    </VBox>
+    
+    <!-- Password -->
+    <VBox spacing="5">
+        <Label text="Password" styleClass="field-label"/>
+        <PasswordField fx:id="passwordField" 
+                       styleClass="dialog-field"/>
+    </VBox>
+    
+    <!-- Private Key -->
+    <VBox spacing="5">
+        <Label text="Private Key Path" styleClass="field-label"/>
+        <HBox spacing="10">
+            <TextField fx:id="keyPathField" 
+                       promptText="~/.ssh/id_rsa"
+                       HBox.hgrow="ALWAYS"
+                       styleClass="dialog-field"/>
+            <Button fx:id="browseKeyBtn" 
+                    text="Browse"
+                    onAction="#onBrowseKey"
+                    styleClass="browse-btn"/>
+        </HBox>
+    </VBox>
+    
+    <!-- Passphrase -->
+    <VBox spacing="5">
+        <Label text="Passphrase (if key is encrypted)" styleClass="field-label"/>
+        <PasswordField fx:id="passphraseField" 
+                       styleClass="dialog-field"/>
+    </VBox>
+    
+    <!-- Group -->
+    <VBox spacing="5">
+        <Label text="Group" styleClass="field-label"/>
+        <ComboBox fx:id="groupCombo" 
+                  promptText="Select group..."
+                  maxWidth="Infinity"
+                  styleClass="dialog-combo"/>
+    </VBox>
+    
+    <!-- Buttons -->
+    <HBox spacing="15" alignment="CENTER_RIGHT">
+        <VBox.margin>
+            <Insets top="15"/>
+        </VBox.margin>
+        <Button fx:id="cancelBtn" 
+                text="Cancel"
+                onAction="#onCancel"
+                styleClass="cancel-btn"/>
+        <Button fx:id="saveBtn" 
+                text="Save"
+                onAction="#onSave"
+                styleClass="save-btn"/>
+    </HBox>
+</VBox>
