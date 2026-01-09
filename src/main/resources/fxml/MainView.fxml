@@ -10,87 +10,51 @@
             fx:id="rootPane"
             styleClass="root-pane">
 
-    <!-- Left Sidebar -->
-    <left>
-        <VBox prefWidth="280" styleClass="sidebar">
+    <!-- Top: Horizontal Navigation -->
+    <top>
+        <HBox styleClass="nav-bar" alignment="CENTER_LEFT">
             <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
+                <Insets top="10" right="15" bottom="10" left="15"/>
             </padding>
-            
-            <!-- Search -->
-            <TextField fx:id="searchField" 
-                       promptText="Search hosts..." 
-                       styleClass="search-field">
-                <VBox.margin>
-                    <Insets bottom="15"/>
-                </VBox.margin>
-            </TextField>
-            
-            <!-- Action buttons -->
-            <HBox spacing="10" alignment="CENTER">
-                <Button fx:id="addHostBtn" 
-                        text="+ Host" 
-                        onAction="#onAddHost"
-                        styleClass="action-btn"
-                        HBox.hgrow="ALWAYS"
-                        maxWidth="Infinity"/>
-                <Button fx:id="addGroupBtn" 
-                        text="+ Group" 
-                        onAction="#onAddGroup"
-                        styleClass="action-btn-secondary"
-                        HBox.hgrow="ALWAYS"
-                        maxWidth="Infinity"/>
-                <VBox.margin>
-                    <Insets bottom="15"/>
-                </VBox.margin>
-            </HBox>
-            
-            <!-- Host Tree -->
-            <TreeView fx:id="hostTree" 
-                      VBox.vgrow="ALWAYS"
-                      styleClass="host-tree"/>
-        </VBox>
-    </left>
+            <Label text="🥷 TerminalInNinja" styleClass="app-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="statusLabel" text="Ready" styleClass="status-label"/>
+        </HBox>
+    </top>
 
-    <!-- Center - Terminal Tabs -->
+    <!-- Center: Tab Navigation -->
     <center>
         <TabPane fx:id="mainTabs" 
                  VBox.vgrow="ALWAYS"
                  styleClass="main-tabs"
                  tabClosingPolicy="UNAVAILABLE">
+            
             <!-- Hosts Tab -->
             <Tab text="🏠 Hosts">
-                <VBox styleClass="terminal-area">
-                    <TabPane fx:id="terminalTabs" 
-                             VBox.vgrow="ALWAYS"
-                             styleClass="terminal-tabs"
-                             tabClosingPolicy="ALL_TABS">
-                        <!-- Welcome Tab -->
-                        <Tab text="Welcome" closable="false">
-                            <VBox alignment="CENTER" spacing="20" styleClass="welcome-tab">
-                                <Label text="🥷 TerminalInNinja" styleClass="welcome-title"/>
-                                <Label text="Double-click a host to connect" styleClass="welcome-subtitle"/>
-                                <Label text="or click '+ Host' to add a new connection" styleClass="welcome-hint"/>
-                            </VBox>
-                        </Tab>
-                    </TabPane>
-                </VBox>
+                <fx:include source="HostsView.fxml"/>
             </Tab>
             
             <!-- Snippets Tab -->
             <Tab text="📝 Snippets">
                 <fx:include source="SnippetView.fxml"/>
             </Tab>
+            
+            <!-- SFTP Tab (Coming Soon) -->
+            <Tab text="📁 SFTP" disabled="true">
+                <VBox alignment="CENTER" spacing="20" styleClass="coming-soon-tab">
+                    <Label text="📁 SFTP" styleClass="section-title"/>
+                    <Label text="Coming soon!" styleClass="coming-soon-label"/>
+                </VBox>
+            </Tab>
+            
+            <!-- Settings Tab (Coming Soon) -->
+            <Tab text="⚙️ Settings" disabled="true">
+                <VBox alignment="CENTER" spacing="20" styleClass="coming-soon-tab">
+                    <Label text="⚙️ Settings" styleClass="section-title"/>
+                    <Label text="Coming soon!" styleClass="coming-soon-label"/>
+                </VBox>
+            </Tab>
         </TabPane>
     </center>
 
-    <!-- Bottom Status Bar -->
-    <bottom>
-        <HBox styleClass="status-bar" alignment="CENTER_LEFT">
-            <padding>
-                <Insets top="5" right="15" bottom="5" left="15"/>
-            </padding>
-            <Label fx:id="statusLabel" text="Ready" styleClass="status-label"/>
-        </HBox>
-    </bottom>
 </BorderPane>

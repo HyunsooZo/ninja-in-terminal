@@ -29,18 +29,20 @@ public class MainController implements Initializable {
     private static final Logger log = LoggerFactory.getLogger(MainController.class);
     
     @FXML private BorderPane rootPane;
-    @FXML private TreeView<Object> hostTree;
     @FXML private TabPane mainTabs;
-    @FXML private TabPane terminalTabs;
-    @FXML private Button addHostBtn;
-    @FXML private Button addGroupBtn;
-    @FXML private TextField searchField;
     @FXML private Label statusLabel;
+    
+    private TreeView<Object> hostTree;
+    private TabPane terminalTabs;
+    private Button addHostBtn;
+    private Button addGroupBtn;
+    private TextField searchField;
     
     private final ConfigService configService = ConfigService.getInstance();
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        findHostsViewComponents();
         setupHostTree();
         setupContextMenu();
         setupCommandPalette();
@@ -292,6 +294,23 @@ public class MainController implements Initializable {
                 loadHosts();
             }
         });
+    }
+    
+    private void findHostsViewComponents() {
+        Tab hostsTab = mainTabs.getTabs().get(0);
+        if (hostsTab != null && hostsTab.getContent() instanceof SplitPane hostsSplitPane) {
+            VBox leftPane = (VBox) hostsSplitPane.getItems().get(0);
+            VBox rightPane = (VBox) hostsSplitPane.getItems().get(1);
+            
+            searchField = (TextField) leftPane.getChildren().get(2);
+            HBox buttonBox = (HBox) leftPane.getChildren().get(3);
+            addHostBtn = (Button) buttonBox.getChildren().get(0);
+            addGroupBtn = (Button) buttonBox.getChildren().get(1);
+            hostTree = (TreeView<Object>) leftPane.getChildren().get(4);
+            
+            TabPane tabPane = (TabPane) rightPane.getChildren().get(0);
+            terminalTabs = tabPane;
+        }
     }
     
     private void showError(String title, String message) {

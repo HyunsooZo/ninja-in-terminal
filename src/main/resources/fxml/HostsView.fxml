@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<SplitPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:id="hostsSplitPane"
+            dividerPositions="0.3"
+            orientation="HORIZONTAL">
+
+    <!-- Left: Host List -->
+    <VBox spacing="10">
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
+        
+        <Label text="🖥️ Hosts" style="-fx-text-fill: #80cbc4; -fx-font-weight: bold;"/>
+        
+        <TextField fx:id="searchField" 
+                   promptText="Search hosts..." 
+                   styleClass="search-field">
+            <VBox.margin>
+                <Insets bottom="10"/>
+            </VBox.margin>
+        </TextField>
+        
+        <HBox spacing="5" alignment="CENTER_LEFT">
+            <Button fx:id="addHostBtn" 
+                    text="+ Host" 
+                    onAction="#onAddHost"
+                    styleClass="action-btn"
+                    HBox.hgrow="ALWAYS"/>
+            <Button fx:id="addGroupBtn" 
+                    text="+ Group" 
+                    onAction="#onAddGroup"
+                    styleClass="action-btn-secondary"
+                    HBox.hgrow="ALWAYS"/>
+        </HBox>
+        
+        <TreeView fx:id="hostTree" 
+                  VBox.vgrow="ALWAYS"
+                  styleClass="host-tree"/>
+    </VBox>
+
+    <!-- Right: Terminal Tabs -->
+    <VBox styleClass="terminal-area">
+        <TabPane fx:id="terminalTabs" 
+                 VBox.vgrow="ALWAYS"
+                 styleClass="terminal-tabs"
+                 tabClosingPolicy="ALL_TABS">
+            <!-- Welcome Tab -->
+            <Tab text="Welcome" closable="false">
+                <VBox alignment="CENTER" spacing="20" styleClass="welcome-tab">
+                    <Label text="🥷 TerminalInNinja" styleClass="welcome-title"/>
+                    <Label text="Double-click a host to connect" styleClass="welcome-subtitle"/>
+                    <Label text="or click '+ Host' to add a new connection" styleClass="welcome-hint"/>
+                    <Label text="Press CTRL+J to open Command Palette" styleClass="welcome-hint"/>
+                </VBox>
+            </Tab>
+        </TabPane>
+    </VBox>
+
+</SplitPane>
