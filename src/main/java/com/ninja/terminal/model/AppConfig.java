@@ -33,6 +33,7 @@ public class AppConfig {
         private String theme = "dark";
         private int defaultPort = 22;
         private int connectionTimeout = 30000;
+        private int scrollBufferSize = 10000;
         
         public String getFontFamily() { return fontFamily; }
         public void setFontFamily(String fontFamily) { this.fontFamily = fontFamily; }
@@ -48,5 +49,8 @@ public class AppConfig {
 
         public int getConnectionTimeout() { return connectionTimeout; }
         public void setConnectionTimeout(int connectionTimeout) { this.connectionTimeout = connectionTimeout; }
+
+        public int getScrollBufferSize() { return scrollBufferSize; }
+        public void setScrollBufferSize(int scrollBufferSize) { this.scrollBufferSize = scrollBufferSize; }
     }
 }

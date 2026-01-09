@@ -9,7 +9,7 @@
       fx:controller="com.ninja.terminal.controller.TerminalTabController"
       fx:id="terminalContainer"
       styleClass="terminal-container">
-    
+
     <!-- Connection Info Bar -->
     <HBox styleClass="connection-bar" alignment="CENTER_LEFT">
         <padding>
@@ -17,10 +17,9 @@
         </padding>
         <Label fx:id="connectionInfo" text="Not connected" styleClass="connection-info"/>
     </HBox>
-    
-    <!-- Terminal Area -->
-    <TextArea fx:id="terminalArea" 
-              VBox.vgrow="ALWAYS"
-              styleClass="terminal-text-area"
-              wrapText="true"/>
+
+    <!-- Terminal Pane (SwingNode for JediTerm) -->
+    <StackPane fx:id="terminalPane"
+               VBox.vgrow="ALWAYS"
+               style="-fx-background-color: #1a1a2e;"/>
 </VBox>
