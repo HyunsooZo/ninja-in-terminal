@@ -9,6 +9,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -40,6 +42,7 @@ public class MainController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         setupHostTree();
         setupContextMenu();
+        setupCommandPalette();
         loadHosts();
         
         // Double-click to connect
@@ -111,6 +114,45 @@ public class MainController implements Initializable {
         
         contextMenu.getItems().addAll(connectItem, new SeparatorMenuItem(), editItem, deleteItem);
         hostTree.setContextMenu(contextMenu);
+    }
+    
+    private void setupCommandPalette() {
+        rootPane.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.J && event.isControlDown()) {
+                showCommandPalette();
+                event.consume();
+            }
+        });
+    }
+    
+    private void showCommandPalette() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CommandPaletteView.fxml"));
+            VBox content = loader.load();
+            
+            CommandPaletteController controller = loader.getController();
+            controller.setMainController(this);
+            controller.setOnHostSelected(hostName -> {
+                configService.getHosts().stream()
+                        .filter(h -> hostName.equals(h.getName()) || hostName.equals(h.getHostname()))
+                        .findFirst()
+                        .ifPresent(this::connectToHost);
+            });
+            
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(rootPane.getScene().getWindow());
+            
+            Scene scene = new Scene(content);
+            scene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
+            stage.setScene(scene);
+            
+            controller.show();
+            stage.show();
+            
+        } catch (IOException e) {
+            log.error("Failed to open command palette", e);
+        }
     }
     
     public void loadHosts() {
