@@ -1,14 +1,12 @@
 package com.ninja.terminal.util;
 
 import com.jcraft.jsch.ChannelShell;
-import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-import org.jetbrains.jediterm.terminal.Questioner;
-import org.jetbrains.jediterm.terminal.TtyConnector;
+import com.jediterm.terminal.TtyConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -20,7 +18,6 @@ public class JSchTtyConnector implements TtyConnector {
 
     private final ChannelShell channel;
     private final Session session;
-    private InputStream inputStream;
     private InputStreamReader inputStreamReader;
     private OutputStream outputStream;
 
@@ -28,22 +25,11 @@ public class JSchTtyConnector implements TtyConnector {
         this.session = session;
         this.channel = channel;
         try {
-            this.inputStream = channel.getInputStream();
+            InputStream inputStream = channel.getInputStream();
             this.outputStream = channel.getOutputStream();
             this.inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
         } catch (IOException e) {
             log.error("Error creating streams", e);
-        }
-    }
-
-    @Override
-    public boolean init(Questioner questioner) {
-        try {
-            channel.connect(3000);
-            return true;
-        } catch (JSchException e) {
-            log.error("Failed to connect channel", e);
-            return false;
         }
     }
 

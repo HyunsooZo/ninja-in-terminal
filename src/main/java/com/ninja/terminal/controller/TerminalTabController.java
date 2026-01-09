@@ -1,6 +1,12 @@
 package com.ninja.terminal.controller;
 
 import com.jcraft.jsch.ChannelShell;
+import com.jediterm.terminal.TerminalColor;
+import com.jediterm.terminal.TextStyle;
+import com.jediterm.terminal.TtyConnector;
+import com.jediterm.terminal.emulator.ColorPalette;
+import com.jediterm.terminal.ui.JediTermWidget;
+import com.jediterm.terminal.ui.settings.DefaultSettingsProvider;
 import com.ninja.terminal.model.HostInfo;
 import com.ninja.terminal.service.ConfigService;
 import com.ninja.terminal.service.SshService;
@@ -10,15 +16,11 @@ import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
-import org.jetbrains.jediterm.terminal.TtyConnector;
-import org.jetbrains.jediterm.terminal.ui.JediTermWidget;
-import org.jetbrains.jediterm.terminal.ui.settings.DefaultSettingsProvider;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -40,8 +42,8 @@ public class TerminalTabController implements Initializable {
     }
 
     public void connect(HostInfo host) {
-        connectionInfo.setText(String.format("Connecting to %s@%s:%d...", 
-            host.getUsername(), host.getHostname(), host.getPort()));
+        connectionInfo.setText(String.format("Connecting to %s@%s:%d...",
+                host.getUsername(), host.getHostname(), host.getPort()));
 
         new Thread(() -> {
             try {
@@ -81,28 +83,17 @@ public class TerminalTabController implements Initializable {
             }
 
             @Override
-            public Color getTerminalBackground() {
-                return new Color(0x1a, 0x1a, 0x2e);
+            public ColorPalette getTerminalColorPalette() {
+                return super.getTerminalColorPalette();
             }
 
+            @NotNull
             @Override
-            public Color getTerminalForeground() {
-                return new Color(0xe0, 0xe0, 0xe0);
-            }
-
-            @Override
-            public int getTerminalRows() {
-                return 40;
-            }
-
-            @Override
-            public int getTerminalColumns() {
-                return 120;
-            }
-
-            @Override
-            public int getScrollBufferSize() {
-                return ConfigService.getInstance().getSettings().getScrollBufferSize();
+            public TextStyle getDefaultStyle() {
+                return new TextStyle(
+                        TerminalColor.rgb(0xe0, 0xe0, 0xe0),
+                        TerminalColor.rgb(0x1a, 0x1a, 0x2e)
+                );
             }
         };
 
@@ -113,10 +104,12 @@ public class TerminalTabController implements Initializable {
         SwingNode swingNode = new SwingNode();
         swingNode.setContent(terminalWidget);
 
+        // 포커스 문제 해결
         swingNode.setOnMouseClicked(event -> swingNode.requestFocus());
 
         terminalPane.getChildren().add(swingNode);
 
+        // 연결 시간 업데이트 및 저장
         host.setLastConnectedAt(LocalDateTime.now());
         ConfigService.getInstance().updateHost(host);
 

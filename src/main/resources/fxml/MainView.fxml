@@ -10,7 +10,6 @@
             fx:id="rootPane"
             styleClass="root-pane">
 
-    <!-- Top: Horizontal Navigation -->
     <top>
         <HBox styleClass="nav-bar" alignment="CENTER_LEFT">
             <padding>
@@ -22,33 +21,28 @@
         </HBox>
     </top>
 
-    <!-- Center: Tab Navigation -->
     <center>
-        <TabPane fx:id="mainTabs" 
+        <TabPane fx:id="mainTabs"
                  VBox.vgrow="ALWAYS"
                  styleClass="main-tabs"
                  tabClosingPolicy="UNAVAILABLE">
-            
-            <!-- Hosts Tab -->
+
             <Tab text="🏠 Hosts">
                 <fx:include source="HostsView.fxml"/>
             </Tab>
-            
-            <!-- Snippets Tab -->
+
             <Tab text="📝 Snippets">
                 <fx:include source="SnippetView.fxml"/>
             </Tab>
-            
-            <!-- SFTP Tab (Coming Soon) -->
-            <Tab text="📁 SFTP" disabled="true">
+
+            <Tab text="📁 SFTP" disable="true">
                 <VBox alignment="CENTER" spacing="20" styleClass="coming-soon-tab">
                     <Label text="📁 SFTP" styleClass="section-title"/>
                     <Label text="Coming soon!" styleClass="coming-soon-label"/>
                 </VBox>
             </Tab>
-            
-            <!-- Settings Tab (Coming Soon) -->
-            <Tab text="⚙️ Settings" disabled="true">
+
+            <Tab text="⚙️ Settings" disable="true">
                 <VBox alignment="CENTER" spacing="20" styleClass="coming-soon-tab">
                     <Label text="⚙️ Settings" styleClass="section-title"/>
                     <Label text="Coming soon!" styleClass="coming-soon-label"/>

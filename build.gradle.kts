@@ -1,5 +1,6 @@
 plugins {
     java
+    application
     id("org.openjfx.javafxplugin") version "0.1.0"
 }
 
@@ -20,18 +21,21 @@ java {
 javafx {
     version = "21"
     modules = listOf("javafx.controls", "javafx.fxml", "javafx.graphics", "javafx.swing")
-    
-    application {
-        mainModule.set("com.ninja.terminal")
-        mainClass.set("com.ninja.terminal.app.MainApp")
-    }
+}
+
+application {
+    // [중요] module-info.java가 없다면 이 줄은 주석 처리하거나 지워야 합니다.
+    // mainModule.set("com.ninja.terminal")
+
+    // [핵심 수정] MainApp이 아닌 Launcher를 실행하도록 변경
+    mainClass.set("com.ninja.terminal.app.Launcher")
 }
 
 dependencies {
     // SSH
     implementation("com.jcraft:jsch:0.1.55")
 
-    // JediTerm - Terminal Emulator (버전 통일)
+    // JediTerm - Terminal Emulator
     implementation("org.jetbrains.jediterm:jediterm-core:3.47")
     implementation("org.jetbrains.jediterm:jediterm-ui:3.47")
 
@@ -46,11 +50,12 @@ dependencies {
 
 tasks.jar {
     manifest {
-        attributes["Main-Class"] = "com.ninja.terminal.app.MainApp"
+        // [핵심 수정] Jar 파일 실행 시에도 Launcher가 시작점이어야 함
+        attributes["Main-Class"] = "com.ninja.terminal.app.Launcher"
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
-    // Fat jar 구성 (runtimeClasspath 포함)
+    // Fat jar 구성 (의존성 포함)
     from({
         configurations.runtimeClasspath.get()
             .filter { it.exists() }
