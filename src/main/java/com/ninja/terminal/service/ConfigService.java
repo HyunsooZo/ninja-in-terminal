@@ -19,7 +19,7 @@ import java.util.Optional;
 public class ConfigService {
     
     private static final Logger log = LoggerFactory.getLogger(ConfigService.class);
-    private static final String CONFIG_DIR = ".terminalinninja";
+    private static final String CONFIG_DIR = ".ninja-in-terminal";
     private static final String CONFIG_FILE = "config.json";
     
     private final ObjectMapper objectMapper;

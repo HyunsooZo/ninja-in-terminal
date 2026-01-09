@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
 
 <SplitPane xmlns="http://javafx.com/javafx/21"
            xmlns:fx="http://javafx.com/fxml/1"
@@ -15,7 +16,10 @@
             <Insets top="10" right="10" bottom="10" left="10"/>
         </padding>
 
-        <Label text="🖥️ Hosts" style="-fx-text-fill: #80cbc4; -fx-font-weight: bold;"/>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Region styleClass="icon, icon-hosts"/>
+            <Label text="Hosts" style="-fx-text-fill: #80cbc4; -fx-font-weight: bold;"/>
+        </HBox>
 
         <TextField fx:id="searchField"
                    promptText="Search hosts..."
@@ -48,7 +52,14 @@
                  tabClosingPolicy="ALL_TABS">
             <Tab text="Welcome" closable="false">
                 <VBox alignment="CENTER" spacing="20" styleClass="welcome-tab">
-                    <Label text="🥷 TerminalInNinja" styleClass="welcome-title"/>
+                    <HBox alignment="CENTER" spacing="10">
+                        <ImageView fitHeight="64" fitWidth="64" preserveRatio="true">
+                            <image>
+                                <Image url="@../images/logo.jpg"/>
+                            </image>
+                        </ImageView>
+                        <Label text="Ninja-In-Terminal" styleClass="welcome-title"/>
+                    </HBox>
                     <Label text="Double-click a host to connect" styleClass="welcome-subtitle"/>
                     <Label text="or click '+ Host' to add a new connection" styleClass="welcome-hint"/>
                     <Label text="Press CTRL+J to open Command Palette" styleClass="welcome-hint"/>

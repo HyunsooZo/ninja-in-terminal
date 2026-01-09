@@ -1,17 +1,48 @@
-/* TerminalInNinja - Dark Theme (Termius-inspired) */
-
-/* Color Palette */
+/* Color Palette - Tokyo Night Inspired */
 * {
-    -fx-primary: #1a1a2e;
-    -fx-secondary: #16213e;
-    -fx-accent: #0f3460;
-    -fx-highlight: #00d9ff;
-    -fx-text-primary: #e0e0e0;
-    -fx-text-secondary: #a0a0a0;
-    -fx-success: #4ecca3;
-    -fx-warning: #ffc107;
-    -fx-error: #ff6b6b;
-    -fx-border: #2a2a4a;
+    -fx-primary: #1a1b26;
+    -fx-secondary: #24283b;
+    -fx-accent: #3d59a1;
+    -fx-highlight: #7aa2f7;
+    -fx-text-primary: #c0caf5;
+    -fx-text-secondary: #787c99;
+    -fx-success: #9ece6a;
+    -fx-warning: #e0af68;
+    -fx-error: #f7768e;
+    -fx-border: #414868;
+}
+
+/* Icons using SVG Paths */
+.icon {
+    -fx-background-color: -fx-text-secondary;
+    -fx-min-width: 16;
+    -fx-min-height: 16;
+    -fx-max-width: 16;
+    -fx-max-height: 16;
+}
+
+.icon-home {
+    -fx-shape: "M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z";
+}
+
+.icon-hosts {
+    -fx-shape: "M2,2 L22,2 L22,8 L2,8 L2,2 Z M2,10 L22,10 L22,16 L2,16 L2,10 Z M2,18 L22,18 L22,24 L2,24 L2,18 Z M4,13 L6,13 L6,14 L4,14 L4,13 Z M4,21 L6,21 L6,22 L4,22 L4,21 Z M4,5 L6,5 L6,6 L4,6 L4,5 Z";
+}
+
+.icon-snippets {
+    -fx-shape: "M14,17H7V15H14M17,13H7V11H17M17,9H7V7H17M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3Z";
+}
+
+.icon-sftp {
+    -fx-shape: "M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z";
+}
+
+.icon-settings {
+    -fx-shape: "M19.14,12.94C19.14,12.78 19.14,12.61 19.14,12.45C19.14,12.28 19.14,12.11 19.14,11.95L21.49,10.11C21.7,9.94 21.76,9.65 21.62,9.4L19.4,5.55C19.26,5.3 18.96,5.2 18.7,5.3L15.94,6.41C15.36,5.97 14.73,5.6 14.05,5.32L13.63,2.38C13.59,2.11 13.36,1.91 13.09,1.91H8.64C8.36,1.91 8.13,2.11 8.09,2.38L7.67,5.32C6.99,5.6 6.36,5.97 5.78,6.41L3.01,5.3C2.75,5.2 2.45,5.3 2.31,5.55L0.09,9.4C-0.05,9.65 0.01,9.94 0.22,10.11L2.57,11.95C2.57,12.11 2.57,12.28 2.57,12.45C2.57,12.61 2.57,12.78 2.57,12.94L0.22,14.78C0.01,14.95 -0.05,15.24 0.09,15.49L2.31,19.34C2.45,19.59 2.75,19.7 3.01,19.6L5.78,18.49C6.36,18.93 6.99,19.3 7.67,19.58L8.09,22.51C8.13,22.78 8.36,22.98 8.64,22.98H13.09C13.36,22.98 13.59,22.78 13.63,22.51L14.05,19.58C14.73,19.3 15.36,18.93 15.94,18.49L18.7,19.6C18.96,19.7 19.26,19.59 19.4,19.34L21.62,15.49C21.76,15.24 21.7,14.95 21.49,14.78L19.14,12.94M10.86,12.45C10.86,11.13 11.93,10.06 13.25,10.06C14.57,10.06 15.64,11.13 15.64,12.45C15.64,13.77 14.57,14.84 13.25,14.84C11.93,14.84 10.86,13.77 10.86,12.45Z";
+}
+
+.icon-logo {
+    -fx-shape: "M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6M12,8A4,4 0 0,0 8,12A4,4 0 0,0 12,16A4,4 0 0,0 16,12A4,4 0 0,0 12,8Z";
 }
 
 /* Root Pane */
@@ -92,7 +123,7 @@
     -fx-background-radius: 6;
 }
 
-.host-tree .tree-cell:hover:!selected {
+.host-tree .tree-cell:hover:not(:selected) {
     -fx-background-color: rgba(15, 52, 96, 0.5);
     -fx-background-radius: 6;
 }

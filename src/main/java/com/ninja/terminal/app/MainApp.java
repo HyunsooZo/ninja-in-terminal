@@ -17,7 +17,8 @@ public class MainApp extends Application {
         Scene scene = new Scene(root, 1200, 800);
         scene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
 
-        primaryStage.setTitle("TerminalInNinja");
+        primaryStage.setTitle("Ninja-In-Terminal");
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/logo.jpg")));
         primaryStage.setScene(scene);
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);

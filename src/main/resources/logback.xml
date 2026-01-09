@@ -7,9 +7,9 @@
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${user.home}/.terminalinninja/logs/app.log</file>
+        <file>${user.home}/.ninja-in-terminal/logs/app.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${user.home}/.terminalinninja/logs/app.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${user.home}/.ninja-in-terminal/logs/app.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>7</maxHistory>
         </rollingPolicy>
         <encoder>

@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
@@ -15,7 +16,14 @@
             <padding>
                 <Insets top="10" right="15" bottom="10" left="15"/>
             </padding>
-            <Label text="🥷 TerminalInNinja" styleClass="app-title"/>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                    <image>
+                        <Image url="@../images/logo.jpg"/>
+                    </image>
+                </ImageView>
+                <Label text="Ninja-In-Terminal" styleClass="app-title"/>
+            </HBox>
             <Region HBox.hgrow="ALWAYS"/>
             <Label fx:id="statusLabel" text="Ready" styleClass="status-label"/>
         </HBox>
@@ -27,24 +35,50 @@
                  styleClass="main-tabs"
                  tabClosingPolicy="UNAVAILABLE">
 
-            <Tab text="🏠 Hosts">
+            <Tab>
+                <graphic>
+                    <HBox alignment="CENTER" spacing="5">
+                        <Region styleClass="icon, icon-hosts"/>
+                        <Label text="Hosts"/>
+                    </HBox>
+                </graphic>
                 <fx:include source="HostsView.fxml"/>
             </Tab>
 
-            <Tab text="📝 Snippets">
+            <Tab>
+                <graphic>
+                    <HBox alignment="CENTER" spacing="5">
+                        <Region styleClass="icon, icon-snippets"/>
+                        <Label text="Snippets"/>
+                    </HBox>
+                </graphic>
                 <fx:include source="SnippetView.fxml"/>
             </Tab>
 
-            <Tab text="📁 SFTP" disable="true">
+            <Tab disable="true">
+                <graphic>
+                    <HBox alignment="CENTER" spacing="5">
+                        <Region styleClass="icon, icon-sftp"/>
+                        <Label text="SFTP"/>
+                    </HBox>
+                </graphic>
                 <VBox alignment="CENTER" spacing="20" styleClass="coming-soon-tab">
-                    <Label text="📁 SFTP" styleClass="section-title"/>
+                    <Region styleClass="icon, icon-sftp" style="-fx-min-width: 64; -fx-min-height: 64; -fx-max-width: 64; -fx-max-height: 64;"/>
+                    <Label text="SFTP" styleClass="section-title"/>
                     <Label text="Coming soon!" styleClass="coming-soon-label"/>
                 </VBox>
             </Tab>
 
-            <Tab text="⚙️ Settings" disable="true">
+            <Tab disable="true">
+                <graphic>
+                    <HBox alignment="CENTER" spacing="5">
+                        <Region styleClass="icon, icon-settings"/>
+                        <Label text="Settings"/>
+                    </HBox>
+                </graphic>
                 <VBox alignment="CENTER" spacing="20" styleClass="coming-soon-tab">
-                    <Label text="⚙️ Settings" styleClass="section-title"/>
+                    <Region styleClass="icon, icon-settings" style="-fx-min-width: 64; -fx-min-height: 64; -fx-max-width: 64; -fx-max-height: 64;"/>
+                    <Label text="Settings" styleClass="section-title"/>
                     <Label text="Coming soon!" styleClass="coming-soon-label"/>
                 </VBox>
             </Tab>
