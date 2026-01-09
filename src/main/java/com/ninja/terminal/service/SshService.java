@@ -89,6 +89,10 @@ public class SshService {
         }
         log.info("Disconnected");
     }
+
+    public Session getSession() {
+        return session;
+    }
     
     public boolean isConnected() {
         return session != null && session.isConnected();
