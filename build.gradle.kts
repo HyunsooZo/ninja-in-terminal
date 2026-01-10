@@ -67,16 +67,20 @@ tasks.jar {
 tasks.register<Exec>("createWindowsPortable") {
     group = "distribution"
     description = "Create Windows portable package with jpackage"
-    
+
     dependsOn("jar")
-    
+
+    // [수정됨] 일관된 네이밍 사용 (NinjaInTerminal)
     val portableDir = file("$buildDir/portable/NinjaInTerminal")
-    
+
     doFirst {
+        // [중요] jpackage 실행 전 기존 폴더를 깨끗하게 삭제
         portableDir.deleteRecursively()
-        portableDir.mkdirs()
+
+        // [핵심 수정] mkdirs() 삭제함.
+        // jpackage는 대상 폴더가 없어야 자동으로 생성하며, 이미 있으면 에러가 발생함.
     }
-    
+
     commandLine = listOf(
         "jpackage",
         "--name", "NinjaInTerminal",
@@ -84,7 +88,7 @@ tasks.register<Exec>("createWindowsPortable") {
         "--main-jar", "ninja-in-terminal-${version}.jar",
         "--main-class", "com.ninja.terminal.app.MainApp",
         "--type", "app-image",
-        "--dest", file("$buildDir/portable").absolutePath,
+        "--dest", file("$buildDir/portable").absolutePath, // jpackage가 여기에 NinjaInTerminal 폴더를 만듦
         "--icon", file("src/main/resources/images/ninja-exe-icon.ico").absolutePath,
         "--win-console"
     )
@@ -94,9 +98,9 @@ tasks.register<Exec>("createWindowsPortable") {
 tasks.register<Copy>("copyShortcutScripts") {
     group = "distribution"
     description = "Copy shortcut creation scripts to portable package"
-    
+
     dependsOn("createWindowsPortable")
-    
+
     from("scripts/windows")
     include("*.vbs")
     into(file("$buildDir/portable/NinjaInTerminal"))
@@ -106,9 +110,9 @@ tasks.register<Copy>("copyShortcutScripts") {
 tasks.register<Copy>("copyReadme") {
     group = "distribution"
     description = "Copy README to portable package"
-    
+
     dependsOn("createWindowsPortable")
-    
+
     from("docs")
     include("WINDOWS-README.txt")
     into(file("$buildDir/portable/NinjaInTerminal"))
@@ -119,10 +123,14 @@ tasks.register<Copy>("copyReadme") {
 tasks.register<Zip>("createPortableZip") {
     group = "distribution"
     description = "Create portable ZIP package"
-    
+
     dependsOn("copyShortcutScripts", "copyReadme")
-    
+
     archiveFileName.set("NinjaInTerminal-${version}-windows-x64.zip")
     destinationDirectory.set(file("$buildDir/distributions"))
-    from(file("$buildDir/portable/NinjaInTerminal"))
+
+    // portable 폴더 안의 내용을 NinjaInTerminal이라는 최상위 폴더로 감싸서 압축
+    from(file("$buildDir/portable")) {
+        include("NinjaInTerminal/**")
+    }
 }
