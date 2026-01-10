@@ -62,3 +62,67 @@ tasks.jar {
             .map { if (it.isDirectory) it else zipTree(it) }
     })
 }
+
+// Windows Portable 패키징
+tasks.register<Exec>("createWindowsPortable") {
+    group = "distribution"
+    description = "Create Windows portable package with jpackage"
+    
+    dependsOn("jar")
+    
+    val portableDir = file("$buildDir/portable/TerminalInNinja")
+    
+    doFirst {
+        portableDir.deleteRecursively()
+        portableDir.mkdirs()
+    }
+    
+    commandLine = listOf(
+        "jpackage",
+        "--name", "TerminalInNinja",
+        "--input", file("build/libs").absolutePath,
+        "--main-jar", "ninja-in-terminal-${version}.jar",
+        "--main-class", "com.ninja.terminal.app.MainApp",
+        "--type", "app-image",
+        "--dest", file("$buildDir/portable").absolutePath,
+        "--icon", file("src/main/resources/images/ninja-exe-icon.ico").absolutePath,
+        "--win-console"
+    )
+}
+
+// 단축아이콘 생성 스크립트 복사
+tasks.register<Copy>("copyShortcutScripts") {
+    group = "distribution"
+    description = "Copy shortcut creation scripts to portable package"
+    
+    dependsOn("createWindowsPortable")
+    
+    from("scripts/windows")
+    include("*.vbs")
+    into(file("$buildDir/portable/TerminalInNinja"))
+}
+
+// README 복사
+tasks.register<Copy>("copyReadme") {
+    group = "distribution"
+    description = "Copy README to portable package"
+    
+    dependsOn("createWindowsPortable")
+    
+    from("docs")
+    include("WINDOWS-README.txt")
+    into(file("$buildDir/portable/TerminalInNinja"))
+    rename { "README.txt" }
+}
+
+// ZIP 파일 생성
+tasks.register<Zip>("createPortableZip") {
+    group = "distribution"
+    description = "Create portable ZIP package"
+    
+    dependsOn("copyShortcutScripts", "copyReadme")
+    
+    archiveFileName.set("TerminalInNinja-${version}-windows-x64.zip")
+    destinationDirectory.set(file("$buildDir/distributions"))
+    from(file("$buildDir/portable/TerminalInNinja"))
+}

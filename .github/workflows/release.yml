@@ -1,0 +1,70 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          
+      - name: Validate Gradle wrapper
+        uses: gradle/actions/wrapper-validation@v3
+        
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+        
+      - name: Build
+        run: ./gradlew build
+        
+      - name: Create Portable Package
+        run: ./gradlew createPortableZip
+        
+      - name: List build output
+        run: ls -la build/distributions/
+        
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/distributions/NinjaInTerminal-*.zip
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          body: |
+            ## 🎉 NinjaInTerminal ${{ github.ref_name }}
+            
+            ### 📦 다운로드
+            - Windows Portable: `NinjaInTerminal-${{ github.ref_name }}-windows-x64.zip`
+            
+            ### ✨ 주요 변경사항
+            - JediTerm 통합 (완벽한 터미널 에뮬레이션)
+            - Command Palette (CTRL+J)
+            - Snippets 기능
+            - 수평 네비게이션
+            
+            ### 📖 사용법
+            1. ZIP 파일 다운로드
+            2. 압축 해제
+            3. `CreateShortcut.vbs` 더블클릭 (단축아이콘 생성, 선택사항)
+            4. `NinjaInTerminal.exe` 실행
+            
+            ### ⚙️ 요구사항
+            - Windows 10/11 64비트
+            - Java 설치 불필요 (내장 JRE 포함)
+            
+            ### 🐛 버그 리포트
+            https://github.com/yourusername/ninja-in-terminal/issues
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
