@@ -1,5 +1,8 @@
 name: Release
 
+permissions:
+  contents: write
+
 on:
   push:
     tags:
@@ -9,32 +12,32 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
-          
+
       - name: Validate Gradle wrapper
         uses: gradle/actions/wrapper-validation@v3
-        
+
       - name: Make gradlew executable
-        run: chmod +x gradlew
-        
+        run: git update-index --chmod=+x gradlew
+
       - name: Build
         run: ./gradlew build
-        
+
       - name: Create Portable Package
         run: ./gradlew createPortableZip
-        
+
       - name: List build output
-        run: ls -la build/distributions/
-        
+        run: dir build/distributions/
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:

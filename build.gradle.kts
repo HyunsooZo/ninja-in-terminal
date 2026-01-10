@@ -50,6 +50,7 @@ tasks.jar {
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
+    // Fat jar 구성 (의존성 포함)
     from({
         configurations.runtimeClasspath.get()
             .filter { it.exists() }
@@ -76,14 +77,14 @@ tasks.register<Exec>("createWindowsPortable") {
         "--name", "NinjaInTerminal",
         "--input", file("build/libs").absolutePath,
         "--main-jar", "ninja-in-terminal-${version}.jar",
-        "--main-class", "com.ninja.terminal.app.MainApp",
+        "--main-class", "com.ninja.terminal.app.Launcher",
         "--type", "app-image",
         "--dest", file("$buildDir/portable").absolutePath,
         "--icon", file("src/main/resources/images/ninja-exe-icon.ico").absolutePath,
         "--win-console"
     )
 
-    //  jpackage 완료 후, 같은 태스크 안에서 파일 복사를 수행
+    // jpackage 완료 후, 같은 태스크 안에서 파일 복사를 수행 (에러 방지)
     doLast {
         println("Copying additional files to portable directory...")
 
