@@ -23,7 +23,7 @@
             <TreeView fx:id="snippetTree" VBox.vgrow="ALWAYS" prefWidth="250"/>
             
             <HBox spacing="5" alignment="CENTER_LEFT">
-                <Button fx:id="addPackageBtn" text="+" prefWidth="30"/>
+                <Button fx:id="addPackageBtn" text="+" prefWidth="30" styleClass="action-btn-secondary"/>
             </HBox>
         </VBox>
     </left>
@@ -42,7 +42,7 @@
                 <ListView fx:id="snippetListView" VBox.vgrow="ALWAYS"/>
                 
                 <HBox spacing="5" alignment="CENTER_LEFT">
-                    <Button fx:id="addSnippetBtn" text="Add Snippet"/>
+                    <Button fx:id="addSnippetBtn" text="Add Snippet" styleClass="action-btn"/>
                 </HBox>
             </VBox>
             
@@ -54,22 +54,22 @@
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <Label fx:id="titleLabel" text="" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #e0e0e0;"/>
                     <Region HBox.hgrow="ALWAYS"/>
-                    <Button fx:id="runBtn" text="Run">
+                    <Button fx:id="runBtn" text="Run" styleClass="action-btn">
                         <graphic>
                             <Region styleClass="icon, icon-play" style="-fx-min-width: 12; -fx-min-height: 12; -fx-max-width: 12; -fx-max-height: 12;"/>
                         </graphic>
                     </Button>
-                    <Button fx:id="copyBtn" text="Copy">
+                    <Button fx:id="copyBtn" text="Copy" styleClass="action-btn-secondary">
                         <graphic>
                             <Region styleClass="icon, icon-copy" style="-fx-min-width: 12; -fx-min-height: 12; -fx-max-width: 12; -fx-max-height: 12;"/>
                         </graphic>
                     </Button>
-                    <Button fx:id="editBtn" text="Edit">
+                    <Button fx:id="editBtn" text="Edit" styleClass="action-btn-secondary">
                         <graphic>
                             <Region styleClass="icon, icon-edit" style="-fx-min-width: 12; -fx-min-height: 12; -fx-max-width: 12; -fx-max-height: 12;"/>
                         </graphic>
                     </Button>
-                    <Button fx:id="deleteBtn" text="Delete">
+                    <Button fx:id="deleteBtn" text="Delete" styleClass="action-btn-secondary">
                         <graphic>
                             <Region styleClass="icon, icon-trash" style="-fx-min-width: 12; -fx-min-height: 12; -fx-max-width: 12; -fx-max-height: 12;"/>
                         </graphic>

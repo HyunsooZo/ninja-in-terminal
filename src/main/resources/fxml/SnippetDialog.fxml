@@ -19,34 +19,35 @@
 
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Label text="Name:" prefWidth="100" style="-fx-text-fill: #e0e0e0;"/>
-        <TextField fx:id="nameField" HBox.hgrow="ALWAYS" promptText="Snippet name"/>
+        <TextField fx:id="nameField" HBox.hgrow="ALWAYS" promptText="Snippet name" styleClass="dialog-field"/>
     </HBox>
 
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Label text="Description:" prefWidth="100" style="-fx-text-fill: #e0e0e0;"/>
-        <TextField fx:id="descriptionField" HBox.hgrow="ALWAYS" promptText="Snippet description"/>
+        <TextField fx:id="descriptionField" HBox.hgrow="ALWAYS" promptText="Snippet description" styleClass="dialog-field"/>
     </HBox>
 
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Label text="Package:" prefWidth="100" style="-fx-text-fill: #e0e0e0;"/>
-        <ComboBox fx:id="packageComboBox" HBox.hgrow="ALWAYS" promptText="Select package"/>
+        <ComboBox fx:id="packageComboBox" HBox.hgrow="ALWAYS" promptText="Select package" styleClass="dialog-combo"/>
     </HBox>
 
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Label text="Tags:" prefWidth="100" style="-fx-text-fill: #e0e0e0;"/>
-        <TextField fx:id="tagsField" HBox.hgrow="ALWAYS" promptText="Comma-separated tags"/>
+        <TextField fx:id="tagsField" HBox.hgrow="ALWAYS" promptText="Comma-separated tags" styleClass="dialog-field"/>
     </HBox>
 
     <VBox spacing="5" VBox.vgrow="ALWAYS">
         <Label text="Script:" style="-fx-text-fill: #80cbc4; -fx-font-weight: bold;"/>
         <TextArea fx:id="scriptTextArea" 
                   VBox.vgrow="ALWAYS" 
+                  styleClass="dialog-textarea"
                   promptText="Enter your script here..."/>
     </VBox>
 
     <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button fx:id="cancelBtn" text="Cancel" prefWidth="100"/>
-        <Button fx:id="saveBtn" text="Save" prefWidth="100" style="-fx-background-color: #45a049;"/>
+        <Button fx:id="cancelBtn" text="Cancel" prefWidth="100" styleClass="cancel-btn"/>
+        <Button fx:id="saveBtn" text="Save" prefWidth="100" styleClass="save-btn"/>
     </HBox>
 
 </VBox>
