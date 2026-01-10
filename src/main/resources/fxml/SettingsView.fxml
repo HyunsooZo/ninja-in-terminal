@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ninja.terminal.controller.SettingsController"
+            styleClass="settings-view"
+            stylesheets="@../css/dark-theme.css">
+
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="settings-scroll">
+            <VBox spacing="25">
+                <padding>
+                    <Insets top="20" right="30" bottom="20" left="30"/>
+                </padding>
+
+                <!-- Header -->
+                <VBox spacing="5">
+                    <Label text="Settings" styleClass="settings-title"/>
+                    <Label text="Configure your terminal experience" styleClass="settings-subtitle"/>
+                </VBox>
+
+                <Separator/>
+
+                <!-- Terminal Section -->
+                <VBox spacing="15" styleClass="settings-section">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Region styleClass="icon, icon-settings" style="-fx-min-width: 18; -fx-min-height: 18;"/>
+                        <Label text="Terminal" styleClass="settings-section-title"/>
+                    </HBox>
+
+                    <!-- Font Family -->
+                    <VBox spacing="5">
+                        <Label text="Font Family" styleClass="field-label"/>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <ComboBox fx:id="fontFamilyCombo"
+                                      prefWidth="250"
+                                      styleClass="dialog-combo"/>
+                            <Label text="Choose a monospace font for the terminal"
+                                   styleClass="field-hint"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Font Size -->
+                    <VBox spacing="5">
+                        <Label text="Font Size" styleClass="field-label"/>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Spinner fx:id="fontSizeSpinner"
+                                     prefWidth="100"
+                                     editable="true"
+                                     styleClass="settings-spinner"/>
+                            <Label text="Terminal text size (8-24)" styleClass="field-hint"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Scroll Buffer Size -->
+                    <VBox spacing="5">
+                        <Label text="Scroll Buffer Size" styleClass="field-label"/>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Spinner fx:id="scrollBufferSpinner"
+                                     prefWidth="150"
+                                     editable="true"
+                                     styleClass="settings-spinner"/>
+                            <Label text="Number of lines to keep in history (1000-50000)"
+                                   styleClass="field-hint"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+
+                <Separator/>
+
+                <!-- SSH Connection Section -->
+                <VBox spacing="15" styleClass="settings-section">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Region styleClass="icon, icon-hosts" style="-fx-min-width: 18; -fx-min-height: 18;"/>
+                        <Label text="SSH Connection" styleClass="settings-section-title"/>
+                    </HBox>
+
+                    <!-- Default Port -->
+                    <VBox spacing="5">
+                        <Label text="Default SSH Port" styleClass="field-label"/>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Spinner fx:id="defaultPortSpinner"
+                                     prefWidth="100"
+                                     editable="true"
+                                     styleClass="settings-spinner"/>
+                            <Label text="Default port for new hosts (1-65535)"
+                                   styleClass="field-hint"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Connection Timeout -->
+                    <VBox spacing="5">
+                        <Label text="Connection Timeout" styleClass="field-label"/>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Spinner fx:id="connectionTimeoutSpinner"
+                                     prefWidth="150"
+                                     editable="true"
+                                     styleClass="settings-spinner"/>
+                            <Label text="Timeout in milliseconds (5000-60000)"
+                                   styleClass="field-hint"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+
+                <Separator/>
+
+                <!-- Appearance Section -->
+                <VBox spacing="15" styleClass="settings-section">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Region styleClass="icon, icon-settings" style="-fx-min-width: 18; -fx-min-height: 18;"/>
+                        <Label text="Appearance" styleClass="settings-section-title"/>
+                    </HBox>
+
+                    <!-- Theme -->
+                    <VBox spacing="5">
+                        <Label text="Theme" styleClass="field-label"/>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <ComboBox fx:id="themeCombo"
+                                      prefWidth="200"
+                                      styleClass="dialog-combo"/>
+                            <Label text="Application color theme" styleClass="field-hint"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+
+                <Separator/>
+
+                <!-- Action Buttons -->
+                <HBox spacing="15" alignment="CENTER_RIGHT">
+                    <VBox.margin>
+                        <Insets top="10"/>
+                    </VBox.margin>
+                    <Button fx:id="resetBtn"
+                            text="Reset to Defaults"
+                            styleClass="action-btn-secondary"/>
+                    <Button fx:id="saveBtn"
+                            text="Save Changes"
+                            styleClass="action-btn"/>
+                </HBox>
+
+                <!-- Info Box -->
+                <VBox spacing="5" styleClass="settings-info-box">
+                    <Label text="ℹ️ Note" styleClass="settings-info-title"/>
+                    <Label text="Some settings may require restarting the application to take effect."
+                           wrapText="true"
+                           styleClass="settings-info-text"/>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

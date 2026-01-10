@@ -3,6 +3,7 @@ package com.ninja.terminal.controller;
 import com.ninja.terminal.model.SnippetInfo;
 import com.ninja.terminal.model.SnippetPackage;
 import com.ninja.terminal.service.SnippetService;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -20,7 +22,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class SnippetController implements Initializable {
@@ -41,6 +42,7 @@ public class SnippetController implements Initializable {
 
     private final SnippetService snippetService = SnippetService.getInstance();
     private SnippetInfo currentSnippet;
+    private MainController mainController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -48,6 +50,30 @@ public class SnippetController implements Initializable {
         setupSnippetList();
         setupButtons();
         loadSnippets();
+
+        // Find and inject MainController after scene is set up
+        Platform.runLater(this::findMainController);
+    }
+
+    private void findMainController() {
+        // Try to find MainController from parent hierarchy or properties
+        if (snippetTree != null && snippetTree.getScene() != null) {
+            var root = snippetTree.getScene().getRoot();
+            if (root != null && root.getProperties().containsKey("mainController")) {
+                mainController = (MainController) root.getProperties().get("mainController");
+                log.info("MainController injected into SnippetController");
+            } else if (root instanceof BorderPane borderPane) {
+                // Try to find it from the BorderPane properties
+                if (borderPane.getProperties().containsKey("mainController")) {
+                    mainController = (MainController) borderPane.getProperties().get("mainController");
+                    log.info("MainController found in BorderPane properties");
+                }
+            }
+        }
+    }
+
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
     }
 
     private void setupSnippetTree() {
@@ -206,10 +232,133 @@ public class SnippetController implements Initializable {
     }
 
     private void runCurrentSnippet() {
-        if (currentSnippet != null) {
-            log.info("Running snippet: {}", currentSnippet.getName());
-            showAlert("Snippet Execution", "Snippet execution to be implemented in terminal tab");
+        if (currentSnippet == null) {
+            return;
         }
+
+        if (mainController == null) {
+            showAlert("Error", "Main controller not initialized");
+            return;
+        }
+
+        // Get the active terminal
+        TerminalTabController activeTerminal = mainController.getActiveTerminalController();
+
+        if (activeTerminal == null || !activeTerminal.isConnected()) {
+            // No active terminal - ask user to select or connect to host first
+            showRunOptions();
+        } else {
+            // Execute in active terminal
+            executeInTerminal(activeTerminal);
+        }
+    }
+
+    private void executeInTerminal(TerminalTabController terminal) {
+        if (currentSnippet == null || currentSnippet.getScript() == null) {
+            return;
+        }
+
+        terminal.executeCommand(currentSnippet.getScript());
+        log.info("Executed snippet '{}' in terminal", currentSnippet.getName());
+
+        // Switch to terminal tab to show execution
+        if (mainController != null) {
+            // Optionally switch to terminal tabs (you can comment this out if not desired)
+            Platform.runLater(() -> {
+                showAlert("Snippet Executed",
+                        String.format("Snippet '%s' has been executed in the active terminal.", currentSnippet.getName()));
+            });
+        }
+    }
+
+    private void showRunOptions() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("No Active Terminal");
+        alert.setHeaderText("No terminal is currently active");
+        alert.setContentText("Would you like to run this snippet on all connected terminals, or connect to a host first?");
+
+        ButtonType runOnAll = new ButtonType("Run on All");
+        ButtonType selectHost = new ButtonType("Select Host");
+        ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(runOnAll, selectHost, cancel);
+        alert.getDialogPane().getStylesheets().add(
+                getClass().getResource("/css/dark-theme.css").toExternalForm()
+        );
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == runOnAll) {
+                runOnAllTerminals();
+            } else if (response == selectHost) {
+                showHostSelectionDialog();
+            }
+        });
+    }
+
+    private void runOnAllTerminals() {
+        if (mainController == null) return;
+
+        java.util.List<TerminalTabController> terminals = mainController.getAllTerminalControllers();
+
+        if (terminals.isEmpty()) {
+            showAlert("No Terminals", "No terminals are currently connected. Please connect to a host first.");
+            return;
+        }
+
+        int count = 0;
+        for (TerminalTabController terminal : terminals) {
+            if (terminal.isConnected()) {
+                executeInTerminal(terminal);
+                count++;
+            }
+        }
+
+        showAlert("Snippet Executed",
+                String.format("Snippet '%s' executed on %d terminal(s).", currentSnippet.getName(), count));
+    }
+
+    private void showHostSelectionDialog() {
+        if (mainController == null) return;
+
+        // Get list of hosts
+        com.ninja.terminal.service.ConfigService configService = com.ninja.terminal.service.ConfigService.getInstance();
+        java.util.List<com.ninja.terminal.model.HostInfo> hosts = configService.getHosts();
+
+        if (hosts.isEmpty()) {
+            showAlert("No Hosts", "No hosts configured. Please add a host first.");
+            return;
+        }
+
+        // Create choice dialog
+        ChoiceDialog<com.ninja.terminal.model.HostInfo> dialog = new ChoiceDialog<>(hosts.get(0), hosts);
+        dialog.setTitle("Select Host");
+        dialog.setHeaderText("Connect to host and run snippet");
+        dialog.setContentText("Choose host:");
+        dialog.getDialogPane().getStylesheets().add(
+                getClass().getResource("/css/dark-theme.css").toExternalForm()
+        );
+
+        dialog.showAndWait().ifPresent(host -> {
+            // Connect to host
+            mainController.connectToHost(host);
+
+            // Wait a bit for connection, then execute
+            new Thread(() -> {
+                try {
+                    Thread.sleep(2000); // Wait 2 seconds for connection
+                    Platform.runLater(() -> {
+                        TerminalTabController terminal = mainController.getActiveTerminalController();
+                        if (terminal != null && terminal.isConnected()) {
+                            executeInTerminal(terminal);
+                        } else {
+                            showAlert("Connection Failed", "Could not connect to host or connection not ready.");
+                        }
+                    });
+                } catch (InterruptedException e) {
+                    log.error("Interrupted while waiting for connection", e);
+                }
+            }).start();
+        });
     }
 
     private void copyCurrentSnippet() {

@@ -26,6 +26,7 @@ public class HostDialogController implements Initializable {
     @FXML private PasswordField passphraseField;
     @FXML private Button browseKeyBtn;
     @FXML private ComboBox<HostGroup> groupCombo;
+    @FXML private TextField startupCommandField;
     @FXML private Button saveBtn;
     @FXML private Button cancelBtn;
     
@@ -90,14 +91,26 @@ public class HostDialogController implements Initializable {
                     .findFirst()
                     .ifPresent(g -> groupCombo.setValue(g));
         }
+
+        // Set startup command
+        if (host.getStartupCommand() != null) {
+            startupCommandField.setText(host.getStartupCommand());
+        }
     }
     
     @FXML
     private void onBrowseKey() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Private Key");
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "/.ssh"));
-        
+
+        // Safe directory handling - fallback to home if .ssh doesn't exist
+        File sshDir = new File(System.getProperty("user.home") + "/.ssh");
+        if (sshDir.exists() && sshDir.isDirectory()) {
+            fileChooser.setInitialDirectory(sshDir);
+        } else {
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        }
+
         File file = fileChooser.showOpenDialog(keyPathField.getScene().getWindow());
         if (file != null) {
             keyPathField.setText(file.getAbsolutePath());
@@ -138,7 +151,11 @@ public class HostDialogController implements Initializable {
         
         HostGroup selectedGroup = groupCombo.getValue();
         host.setGroupId(selectedGroup != null ? selectedGroup.getId() : null);
-        
+
+        // Set startup command
+        String startupCmd = startupCommandField.getText();
+        host.setStartupCommand(startupCmd != null && !startupCmd.trim().isEmpty() ? startupCmd.trim() : null);
+
         if (existingHost != null) {
             configService.updateHost(host);
         } else {

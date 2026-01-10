@@ -55,32 +55,23 @@
                 <fx:include source="SnippetView.fxml"/>
             </Tab>
 
-            <Tab disable="true">
+            <Tab>
                 <graphic>
                     <HBox alignment="CENTER" spacing="5">
                         <Region styleClass="icon, icon-sftp"/>
                         <Label text="SFTP"/>
                     </HBox>
                 </graphic>
-                <VBox alignment="CENTER" spacing="20" styleClass="coming-soon-tab">
-                    <Region styleClass="icon, icon-sftp" style="-fx-min-width: 64; -fx-min-height: 64; -fx-max-width: 64; -fx-max-height: 64;"/>
-                    <Label text="SFTP" styleClass="section-title"/>
-                    <Label text="Coming soon!" styleClass="coming-soon-label"/>
-                </VBox>
+                <fx:include source="SftpView.fxml"/>
             </Tab>
-
-            <Tab disable="true">
+            <Tab>
                 <graphic>
                     <HBox alignment="CENTER" spacing="5">
                         <Region styleClass="icon, icon-settings"/>
                         <Label text="Settings"/>
                     </HBox>
                 </graphic>
-                <VBox alignment="CENTER" spacing="20" styleClass="coming-soon-tab">
-                    <Region styleClass="icon, icon-settings" style="-fx-min-width: 64; -fx-min-height: 64; -fx-max-width: 64; -fx-max-height: 64;"/>
-                    <Label text="Settings" styleClass="section-title"/>
-                    <Label text="Coming soon!" styleClass="coming-soon-label"/>
-                </VBox>
+                <fx:include source="SettingsView.fxml"/>
             </Tab>
         </TabPane>
     </center>

@@ -43,6 +43,11 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Store MainController reference in rootPane properties for child controllers
+        if (rootPane != null) {
+            rootPane.getProperties().put("mainController", this);
+        }
+
         findHostsViewComponents();
         setupHostTree();
         setupContextMenu();
@@ -81,26 +86,46 @@ public class MainController implements Initializable {
         Tab hostsTab = mainTabs.getTabs().get(0);
         if (hostsTab != null && hostsTab.getContent() instanceof SplitPane hostsSplitPane) {
             // SplitPane의 아이템 가져오기
-            VBox leftPane = (VBox) hostsSplitPane.getItems().get(0);
-            VBox rightPane = (VBox) hostsSplitPane.getItems().get(1);
+            if (hostsSplitPane.getItems().size() < 2) return;
 
-            // [중요 수정] FXML 구조에 맞게 인덱스 조정
+            var leftItem = hostsSplitPane.getItems().get(0);
+            var rightItem = hostsSplitPane.getItems().get(1);
+
+            if (!(leftItem instanceof VBox leftPane) || !(rightItem instanceof VBox rightPane)) {
+                log.warn("Unexpected pane types in SplitPane");
+                return;
+            }
+
+            // [중요 수정] FXML 구조에 맞게 인덱스 조정 및 안전한 타입 체크
             // 0: Label, 1: TextField, 2: HBox(Buttons), 3: TreeView
             if (leftPane.getChildren().size() > 3) {
-                searchField = (TextField) leftPane.getChildren().get(1);
-
-                HBox buttonBox = (HBox) leftPane.getChildren().get(2);
-                if (buttonBox.getChildren().size() >= 2) {
-                    addHostBtn = (Button) buttonBox.getChildren().get(0);
-                    addGroupBtn = (Button) buttonBox.getChildren().get(1);
+                if (leftPane.getChildren().get(1) instanceof TextField field) {
+                    searchField = field;
                 }
 
-                hostTree = (TreeView<Object>) leftPane.getChildren().get(3);
+                if (leftPane.getChildren().get(2) instanceof HBox buttonBox) {
+                    if (buttonBox.getChildren().size() >= 2) {
+                        if (buttonBox.getChildren().get(0) instanceof Button btn) {
+                            addHostBtn = btn;
+                        }
+                        if (buttonBox.getChildren().get(1) instanceof Button btn) {
+                            addGroupBtn = btn;
+                        }
+                    }
+                }
+
+                if (leftPane.getChildren().get(3) instanceof TreeView<?> tree) {
+                    @SuppressWarnings("unchecked")
+                    TreeView<Object> objTree = (TreeView<Object>) tree;
+                    hostTree = objTree;
+                }
             }
 
             // 오른쪽 패널의 첫 번째 자식이 Terminal Tabs
             if (!rightPane.getChildren().isEmpty()) {
-                terminalTabs = (TabPane) rightPane.getChildren().getFirst();
+                if (rightPane.getChildren().getFirst() instanceof TabPane tabs) {
+                    terminalTabs = tabs;
+                }
             }
         }
     }
@@ -300,7 +325,7 @@ public class MainController implements Initializable {
         }
     }
 
-    private void connectToHost(HostInfo host) {
+    public void connectToHost(HostInfo host) {
         if (terminalTabs == null) return;
 
         try {
@@ -314,6 +339,9 @@ public class MainController implements Initializable {
             tab.setContent(terminalContent);
             tab.setOnClosed(e -> controller.disconnect());
 
+            // Store controller reference in tab properties for later access
+            tab.setUserData(controller);
+
             terminalTabs.getTabs().add(tab);
             terminalTabs.getSelectionModel().select(tab);
 
@@ -323,6 +351,35 @@ public class MainController implements Initializable {
             log.error("Failed to create terminal tab", e);
             showError("Connection Failed", "Could not create terminal: " + e.getMessage());
         }
+    }
+
+    /**
+     * Get the currently active terminal tab controller
+     * @return TerminalTabController or null if no terminal is active
+     */
+    public TerminalTabController getActiveTerminalController() {
+        if (terminalTabs == null) return null;
+
+        Tab selectedTab = terminalTabs.getSelectionModel().getSelectedItem();
+        if (selectedTab == null || selectedTab.getUserData() == null) {
+            return null;
+        }
+
+        return (TerminalTabController) selectedTab.getUserData();
+    }
+
+    /**
+     * Get all terminal tab controllers
+     * @return List of all terminal controllers
+     */
+    public java.util.List<TerminalTabController> getAllTerminalControllers() {
+        if (terminalTabs == null) return java.util.Collections.emptyList();
+
+        return terminalTabs.getTabs().stream()
+                .map(Tab::getUserData)
+                .filter(data -> data instanceof TerminalTabController)
+                .map(data -> (TerminalTabController) data)
+                .toList();
     }
 
     private void editHost(HostInfo host) {

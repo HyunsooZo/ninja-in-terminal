@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ninja.terminal.controller.SftpController"
+            styleClass="sftp-view"
+            stylesheets="@../css/dark-theme.css">
+
+    <top>
+        <VBox spacing="10">
+            <padding>
+                <Insets top="10" right="15" bottom="10" left="15"/>
+            </padding>
+
+            <!-- Connection Bar -->
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="sftp-connection-bar">
+                <Label text="Connect to:" styleClass="field-label"/>
+                <ComboBox fx:id="hostCombo"
+                          promptText="Select a host..."
+                          prefWidth="250"
+                          styleClass="dialog-combo"/>
+                <Button fx:id="connectBtn"
+                        text="Connect"
+                        styleClass="action-btn"/>
+                <Button fx:id="disconnectBtn"
+                        text="Disconnect"
+                        disable="true"
+                        styleClass="action-btn-secondary"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="connectionStatus"
+                       text="Not connected"
+                       styleClass="connection-status"/>
+            </HBox>
+
+            <!-- Toolbar -->
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="sftp-toolbar">
+                <Button fx:id="backBtn"
+                        text="←"
+                        disable="true"
+                        prefWidth="40"
+                        styleClass="action-btn-secondary">
+                    <tooltip>
+                        <Tooltip text="Go to parent directory"/>
+                    </tooltip>
+                </Button>
+                <TextField fx:id="pathField"
+                           promptText="/"
+                           editable="false"
+                           HBox.hgrow="ALWAYS"
+                           styleClass="sftp-path-field"/>
+                <Button fx:id="refreshBtn"
+                        text="⟳"
+                        disable="true"
+                        prefWidth="40"
+                        styleClass="action-btn-secondary">
+                    <tooltip>
+                        <Tooltip text="Refresh"/>
+                    </tooltip>
+                </Button>
+                <Separator orientation="VERTICAL"/>
+                <Button fx:id="uploadBtn"
+                        text="Upload"
+                        disable="true"
+                        styleClass="action-btn"/>
+                <Button fx:id="downloadBtn"
+                        text="Download"
+                        disable="true"
+                        styleClass="action-btn-secondary"/>
+                <Button fx:id="newFolderBtn"
+                        text="New Folder"
+                        disable="true"
+                        styleClass="action-btn-secondary"/>
+                <Button fx:id="deleteBtn"
+                        text="Delete"
+                        disable="true"
+                        styleClass="action-btn-secondary"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <!-- File List -->
+        <VBox spacing="0">
+            <padding>
+                <Insets top="0" right="15" bottom="15" left="15"/>
+            </padding>
+
+            <!-- Table Header -->
+            <HBox spacing="0" styleClass="sftp-table-header">
+                <Label text="Name" prefWidth="300" styleClass="sftp-table-header-cell"/>
+                <Label text="Size" prefWidth="100" styleClass="sftp-table-header-cell"/>
+                <Label text="Permissions" prefWidth="120" styleClass="sftp-table-header-cell"/>
+                <Label text="Modified" prefWidth="180" styleClass="sftp-table-header-cell"/>
+            </HBox>
+
+            <!-- File Table -->
+            <TableView fx:id="fileTable"
+                       VBox.vgrow="ALWAYS"
+                       styleClass="sftp-file-table">
+                <columns>
+                    <TableColumn fx:id="nameColumn" text="Name" prefWidth="300"/>
+                    <TableColumn fx:id="sizeColumn" text="Size" prefWidth="100"/>
+                    <TableColumn fx:id="permissionsColumn" text="Permissions" prefWidth="120"/>
+                    <TableColumn fx:id="modifiedColumn" text="Modified" prefWidth="180"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+
+    <bottom>
+        <!-- Status Bar -->
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="sftp-status-bar">
+            <padding>
+                <Insets top="8" right="15" bottom="8" left="15"/>
+            </padding>
+            <Label fx:id="statusLabel" text="Ready" styleClass="status-label"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="fileCountLabel" text="0 items" styleClass="status-label"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

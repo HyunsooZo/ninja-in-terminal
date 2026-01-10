@@ -325,6 +325,13 @@
     -fx-font-size: 12px;
 }
 
+.field-hint {
+    -fx-text-fill: -fx-text-secondary;
+    -fx-font-size: 11px;
+    -fx-opacity: 0.7;
+    -fx-font-style: italic;
+}
+
 .dialog-field {
     -fx-background-color: -fx-accent;
     -fx-text-fill: -fx-text-primary;
@@ -612,4 +619,250 @@
     -fx-background-color: #1a4a6e;
     -fx-border-color: -fx-highlight;
     -fx-border-width: 1;
+}
+
+/* Snippet View Specific Styles */
+.snippet-view {
+    -fx-background-color: -fx-primary;
+}
+
+.snippet-view .list-cell:empty {
+    -fx-background-color: transparent;
+}
+
+.snippet-section-title {
+    -fx-text-fill: #80cbc4;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+/* ChoiceDialog Styling */
+.choice-dialog .dialog-pane {
+    -fx-background-color: -fx-secondary;
+}
+
+.choice-dialog .combo-box {
+    -fx-background-color: -fx-accent;
+    -fx-min-width: 300px;
+}
+
+/* Button States */
+.action-btn:disabled,
+.action-btn-secondary:disabled {
+    -fx-opacity: 0.5;
+    -fx-cursor: default;
+}
+
+.action-btn:disabled:hover,
+.action-btn-secondary:disabled:hover {
+    -fx-background-color: -fx-highlight;
+}
+
+/* SFTP View Styles */
+.sftp-view {
+    -fx-background-color: -fx-primary;
+}
+
+.sftp-connection-bar {
+    -fx-background-color: -fx-secondary;
+    -fx-padding: 10;
+    -fx-background-radius: 6;
+}
+
+.sftp-toolbar {
+    -fx-background-color: -fx-secondary;
+    -fx-padding: 10;
+    -fx-background-radius: 6;
+}
+
+.sftp-path-field {
+    -fx-background-color: -fx-accent;
+    -fx-text-fill: -fx-text-primary;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-padding: 8 12;
+    -fx-font-family: 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+    -fx-font-size: 12px;
+}
+
+.sftp-table-header {
+    -fx-background-color: -fx-accent;
+    -fx-padding: 8 10;
+    -fx-border-color: -fx-border;
+    -fx-border-width: 0 0 1 0;
+}
+
+.sftp-table-header-cell {
+    -fx-text-fill: #80cbc4;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-padding: 0 10;
+}
+
+.sftp-file-table {
+    -fx-background-color: -fx-primary;
+}
+
+.sftp-file-table .table-row-cell {
+    -fx-background-color: -fx-primary;
+    -fx-text-fill: -fx-text-primary;
+}
+
+.sftp-file-table .table-row-cell:hover {
+    -fx-background-color: rgba(15, 52, 96, 0.5);
+}
+
+.sftp-file-table .table-row-cell:selected {
+    -fx-background-color: -fx-accent;
+}
+
+.sftp-file-table .table-cell {
+    -fx-text-fill: -fx-text-primary;
+    -fx-padding: 8 10;
+    -fx-font-size: 12px;
+}
+
+.sftp-file-table .table-column-header {
+    -fx-background-color: transparent;
+}
+
+.sftp-file-table .table-column-header .label {
+    -fx-text-fill: transparent;
+    -fx-font-size: 0;
+}
+
+.sftp-status-bar {
+    -fx-background-color: -fx-secondary;
+    -fx-border-color: -fx-border;
+    -fx-border-width: 1 0 0 0;
+}
+
+.connection-status {
+    -fx-text-fill: -fx-text-secondary;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+/* File Type Icons */
+.icon-folder {
+    -fx-shape: "M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z";
+    -fx-background-color: #f7768e;
+}
+
+.icon-file {
+    -fx-shape: "M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z";
+    -fx-background-color: #8890aa;
+}
+
+.icon-file-text {
+    -fx-shape: "M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M10,19H8V17H10V19M14,19H10V17H14V19M10,16H8V14H10V16M14,16H10V14H14V16M10,13H8V11H10V13M14,13H10V11H14V13Z";
+    -fx-background-color: #7aa2f7;
+}
+
+.icon-file-code {
+    -fx-shape: "M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M9.54,15.65L11.63,17.74L10.35,19L7,15.65L10.35,12.3L11.63,13.56L9.54,15.65M14.46,15.65L12.37,17.74L13.65,19L17,15.65L13.65,12.3L12.37,13.56L14.46,15.65Z";
+    -fx-background-color: #9ece6a;
+}
+
+.icon-file-image {
+    -fx-shape: "M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M10,19L12,16L13,17.5L15,14L18,19H10Z";
+    -fx-background-color: #bb9af7;
+}
+
+.icon-file-archive {
+    -fx-shape: "M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M10,11H8V13H10V11M14,11H10V13H14V11M10,15H8V17H10V15M14,15H10V17H14V15Z";
+    -fx-background-color: #e0af68;
+}
+
+/* Settings View Styles */
+.settings-view {
+    -fx-background-color: -fx-primary;
+}
+
+.settings-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.settings-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+.settings-scroll .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.settings-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: -fx-accent;
+    -fx-background-radius: 4;
+}
+
+.settings-title {
+    -fx-text-fill: -fx-text-primary;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.settings-subtitle {
+    -fx-text-fill: -fx-text-secondary;
+    -fx-font-size: 14px;
+}
+
+.settings-section {
+    -fx-background-color: -fx-secondary;
+    -fx-background-radius: 8;
+    -fx-padding: 20;
+}
+
+.settings-section-title {
+    -fx-text-fill: #80cbc4;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.settings-spinner {
+    -fx-background-color: -fx-accent;
+}
+
+.settings-spinner .text-field {
+    -fx-background-color: -fx-accent;
+    -fx-text-fill: -fx-text-primary;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+}
+
+.settings-spinner .increment-arrow-button,
+.settings-spinner .decrement-arrow-button {
+    -fx-background-color: -fx-highlight;
+    -fx-background-radius: 0 6 6 0;
+}
+
+.settings-spinner .increment-arrow-button:hover,
+.settings-spinner .decrement-arrow-button:hover {
+    -fx-background-color: #33e5ff;
+}
+
+.settings-spinner .increment-arrow-button .increment-arrow,
+.settings-spinner .decrement-arrow-button .decrement-arrow {
+    -fx-background-color: -fx-primary;
+}
+
+.settings-info-box {
+    -fx-background-color: rgba(122, 162, 247, 0.1);
+    -fx-border-color: #7aa2f7;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 15;
+}
+
+.settings-info-title {
+    -fx-text-fill: #7aa2f7;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.settings-info-text {
+    -fx-text-fill: -fx-text-secondary;
+    -fx-font-size: 12px;
 }

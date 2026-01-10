@@ -316,13 +316,124 @@ src/main/resources/
 | 멀티 탭 | ✅ 완료 | 100% |
 | 검색 필터 | ✅ 완료 | 100% |
 | 다크 테마 | ✅ 완료 | 100% |
-| Command Palette | ⏳ 진행 중 | 0% |
-| Snippets | ⏳ 대기 중 | 0% |
-| SFTP | ⏳ 대기 중 | 0% |
+| JediTerm 통합 | ✅ 완료 | 100% |
+| Command Palette | ✅ 완료 | 100% |
+| 버그 수정 (ENHANCEMENT-2) | ✅ 완료 | 100% |
+| Snippets | ✅ 완료 | 100% |
+| SFTP | ✅ 완료 | 100% |
+| Settings UI | ✅ 완료 | 100% |
 | Workspaces | ⏳ 대기 중 | 0% |
 | Keychain | ⏳ 대기 중 | 0% |
-| JediTerm 통합 | ⏳ 대기 중 | 0% |
 
 ---
 
-*마지막 업데이트: 2025-01-09*
+## 📝 최근 개선 사항 (2025-01-10)
+
+### ✅ 완료된 주요 기능
+
+1. **JediTerm 통합 완료** (100%)
+   - `TerminalTabController.java`: JediTermWidget 완전 통합
+   - SwingNode를 통한 JavaFX 임베딩
+   - 실제 터미널 에뮬레이션 동작 (ANSI 코드 지원)
+   - 폰트 설정, 색상 팔레트 커스터마이징
+
+2. **Command Palette 완료** (100%)
+   - `CommandPaletteController.java`: 완전 구현
+   - `FuzzySearch.java`: 퍼지 검색 알고리즘 구현
+   - Ctrl+J 단축키로 빠른 호스트 검색 및 연결
+   - 실시간 필터링 및 매칭 하이라이트
+
+3. **Snippets 기능 완성** (100% 완료)
+   - ✅ SnippetView UI 완성
+   - ✅ SnippetController 구현
+   - ✅ CRUD 기능 (생성/수정/삭제)
+   - ✅ SnippetPackage 관리
+   - ✅ 클립보드 복사 기능
+   - ✅ **터미널에서 스니펫 실행 기능 구현**
+     - 활성 터미널에 자동 실행
+     - 여러 호스트에 동시 실행
+     - 호스트 선택하여 연결 후 실행
+   - ✅ **Startup Command 기능**
+     - Host 모델에 startupCommand 필드 추가
+     - 연결 시 자동으로 명령어 실행
+     - Host Dialog에 UI 추가
+
+4. **SFTP 기능 구현** (100% 완료)
+   - ✅ **RemoteFile 모델** - 파일 정보 모델링
+   - ✅ **SftpService** - JSch ChannelSftp 기반 SFTP 작업
+     - 파일 목록 조회
+     - 디렉토리 탐색
+     - 업로드/다운로드
+     - 파일/폴더 생성/삭제
+     - 이름 변경
+     - 권한 변경 (chmod)
+   - ✅ **SftpView UI** - 파일 브라우저 인터페이스
+     - 호스트 선택 및 연결
+     - 파일 테이블 뷰
+     - 툴바 (업로드/다운로드/새 폴더/삭제)
+     - 경로 네비게이션
+   - ✅ **SftpController** - UI 컨트롤러
+     - 더블클릭으로 폴더 열기
+     - 컨텍스트 메뉴 (다운로드/이름 변경/권한/삭제)
+     - 진행 상태 표시
+   - ✅ **CSS 스타일링** - 파일 타입별 아이콘 및 다크 테마
+
+5. **Settings UI 기능 구현** (100% 완료)
+   - ✅ **SettingsView.fxml** - 포괄적인 설정 UI
+     - 스크롤 가능한 설정 패널
+     - 섹션별 정리된 레이아웃 (Terminal, SSH Connection, Appearance)
+     - 각 설정 항목에 대한 도움말 텍스트
+     - Save/Reset 버튼
+   - ✅ **SettingsController.java** - 설정 관리 로직
+     - 터미널 설정 (폰트 패밀리, 폰트 크기, 스크롤 버퍼 크기)
+     - SSH 연결 설정 (기본 포트, 연결 타임아웃)
+     - 외관 설정 (테마 선택)
+     - 유효성 검증이 포함된 Spinner 컨트롤
+     - 10가지 공통 모노스페이스 폰트 제공
+     - 기본값 복원 기능
+   - ✅ **CSS 스타일링** - Settings 뷰에 대한 일관된 다크 테마
+     - 설정 섹션 스타일
+     - 커스텀 Spinner 화살표
+     - 정보 박스 스타일링 (파란색 강조)
+   - ✅ **MainView.fxml 업데이트** - Settings 탭 활성화
+
+### 버그 수정 및 개선 (ENHANCEMENT-2)
+
+1. ✅ **SnippetService 경로 통일**
+   - `.ninja-terminal` → `.ninja-in-terminal` (ConfigService와 통일)
+
+2. ✅ **FileChooser 안전 처리**
+   - HostDialogController: `.ssh` 폴더 미존재 시 홈 디렉토리로 fallback
+
+3. ✅ **Null Safety 개선**
+   - MainController: `findHostsViewComponents()` 메소드에 타입 체크 추가
+   - ClassCastException 방지를 위한 `instanceof` 패턴 적용
+
+4. ✅ **SSH 에러 핸들링 강화**
+   - TerminalTabController: 사용자 친화적인 에러 메시지 제공
+   - 인증 실패, 타임아웃, 연결 거부 등 상세한 에러 메시지
+   - disconnect() 메소드 안전성 개선
+
+### 🚧 다음 작업
+
+1. **Port Forwarding** (우선순위: 높음)
+   - 로컬 포트 포워딩
+   - 원격 포트 포워딩
+   - 다이내믹 포트 포워딩
+   - UI에서 포트 포워딩 관리
+
+2. **Workspaces** (우선순위: 중)
+   - 탭 그룹화
+   - Split View (수평/수직)
+   - Focus Mode
+   - 워크스페이스 저장/불러오기
+
+3. **Keychain** (우선순위: 낮음)
+   - SSH 키 저장소
+   - 키 생성 (RSA, ED25519)
+   - 키 Import/Export
+   - 비밀번호 암호화 저장
+
+---
+
+*마지막 업데이트: 2025-01-10*

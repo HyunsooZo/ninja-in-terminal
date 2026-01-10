@@ -35,7 +35,7 @@ public class SnippetService {
         objectMapper.registerModule(new JavaTimeModule());
         
         String homeDir = System.getProperty("user.home");
-        configDir = Paths.get(homeDir, ".ninja-terminal");
+        configDir = Paths.get(homeDir, ".ninja-in-terminal");
         snippetsFile = configDir.resolve("snippets.json");
         packagesFile = configDir.resolve("snippet-packages.json");
 

@@ -17,6 +17,7 @@ public class HostInfo {
     private String passphrase;
     private String groupId;
     private AuthType authType;
+    private String startupCommand;  // Command to run automatically on connection
     private LocalDateTime createdAt;
     private LocalDateTime lastConnectedAt;
     
@@ -74,6 +75,9 @@ public class HostInfo {
 
     public LocalDateTime getLastConnectedAt() { return lastConnectedAt; }
     public void setLastConnectedAt(LocalDateTime lastConnectedAt) { this.lastConnectedAt = lastConnectedAt; }
+
+    public String getStartupCommand() { return startupCommand; }
+    public void setStartupCommand(String startupCommand) { this.startupCommand = startupCommand; }
 
     @Override
     public String toString() {

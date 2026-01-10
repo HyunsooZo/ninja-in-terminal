@@ -35,6 +35,7 @@ public class TerminalTabController implements Initializable {
 
     private SshService sshService;
     private JediTermWidget terminalWidget;
+    private TtyConnector ttyConnector;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -50,17 +51,38 @@ public class TerminalTabController implements Initializable {
                 sshService.connect(host);
                 ChannelShell channel = sshService.openShell();
 
-                TtyConnector connector = new JSchTtyConnector(sshService.getSession(), channel);
+                ttyConnector = new JSchTtyConnector(sshService.getSession(), channel);
 
-                Platform.runLater(() -> createJediTermWidget(connector, host));
+                Platform.runLater(() -> createJediTermWidget(ttyConnector, host));
 
             } catch (Exception e) {
-                log.error("Connection failed", e);
+                log.error("Connection failed to {}@{}:{}", host.getUsername(), host.getHostname(), host.getPort(), e);
                 Platform.runLater(() -> {
-                    connectionInfo.setText("Connection failed: " + e.getMessage());
+                    String detailedError = getDetailedErrorMessage(e);
+                    connectionInfo.setText("Connection failed: " + detailedError);
+                    connectionInfo.setStyle("-fx-text-fill: #ff6b6b; -fx-font-weight: bold;");
                 });
             }
         }).start();
+    }
+
+    private String getDetailedErrorMessage(Exception e) {
+        String message = e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
+
+        // Provide more helpful error messages based on exception type
+        if (message.contains("Auth fail") || message.contains("Authentication")) {
+            return "Authentication failed. Please check your username and password/key.";
+        } else if (message.contains("UnknownHostException") || message.contains("resolve")) {
+            return "Cannot resolve hostname. Please check the hostname/IP address.";
+        } else if (message.contains("timeout") || message.contains("timed out")) {
+            return "Connection timeout. Please check the host is reachable and port is correct.";
+        } else if (message.contains("Connection refused")) {
+            return "Connection refused. Please check SSH service is running on the host.";
+        } else if (message.contains("Network is unreachable")) {
+            return "Network unreachable. Please check your internet connection.";
+        }
+
+        return message;
     }
 
     private void createJediTermWidget(TtyConnector connector, HostInfo host) {
@@ -114,15 +136,65 @@ public class TerminalTabController implements Initializable {
         ConfigService.getInstance().updateHost(host);
 
         connectionInfo.setText("Connected: " + host.getName());
+
+        // Execute startup command if configured
+        if (host.getStartupCommand() != null && !host.getStartupCommand().trim().isEmpty()) {
+            // Wait a bit for terminal to fully initialize, then execute startup command
+            new Thread(() -> {
+                try {
+                    Thread.sleep(500); // Wait 500ms
+                    executeCommand(host.getStartupCommand());
+                    log.info("Executed startup command for host: {}", host.getName());
+                } catch (InterruptedException e) {
+                    log.warn("Interrupted while waiting to execute startup command", e);
+                }
+            }).start();
+        }
     }
 
     public void disconnect() {
         if (terminalWidget != null) {
-            terminalWidget.close();
-            terminalWidget = null;
+            try {
+                terminalWidget.close();
+            } catch (Exception e) {
+                log.warn("Error closing terminal widget", e);
+            } finally {
+                terminalWidget = null;
+            }
         }
         if (sshService != null) {
-            sshService.disconnect();
+            try {
+                sshService.disconnect();
+            } catch (Exception e) {
+                log.warn("Error disconnecting SSH service", e);
+            }
         }
+    }
+
+    /**
+     * Execute a command in the terminal
+     * @param command The command to execute (will automatically add newline)
+     */
+    public void executeCommand(String command) {
+        if (ttyConnector == null || !ttyConnector.isConnected()) {
+            log.warn("Cannot execute command: terminal not connected");
+            return;
+        }
+
+        try {
+            // Send command with newline to execute it
+            String commandWithNewline = command + "\n";
+            ttyConnector.write(commandWithNewline);
+            log.info("Executed command: {}", command);
+        } catch (Exception e) {
+            log.error("Failed to execute command: {}", command, e);
+        }
+    }
+
+    /**
+     * Check if the terminal is connected and ready
+     */
+    public boolean isConnected() {
+        return ttyConnector != null && ttyConnector.isConnected();
     }
 }

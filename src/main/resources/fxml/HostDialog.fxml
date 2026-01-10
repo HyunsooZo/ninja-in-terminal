@@ -89,12 +89,22 @@
     <!-- Group -->
     <VBox spacing="5">
         <Label text="Group" styleClass="field-label"/>
-        <ComboBox fx:id="groupCombo" 
+        <ComboBox fx:id="groupCombo"
                   promptText="Select group..."
                   maxWidth="Infinity"
                   styleClass="dialog-combo"/>
     </VBox>
-    
+
+    <!-- Startup Command -->
+    <VBox spacing="5">
+        <Label text="Startup Command (optional)" styleClass="field-label"/>
+        <TextField fx:id="startupCommandField"
+                   promptText="Command to run after connecting (e.g., cd /var/log)"
+                   styleClass="dialog-field"/>
+        <Label text="Executes automatically when connecting to this host"
+               styleClass="field-hint"/>
+    </VBox>
+
     <!-- Buttons -->
     <HBox spacing="15" alignment="CENTER_RIGHT">
         <VBox.margin>
