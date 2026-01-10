@@ -1,4 +1,4 @@
-# 🥷 TerminalInNinja - Termius 스타일 개선 계획
+# 🥷 NinjaInTerminal - Termius 스타일 개선 계획
 
 ---
 

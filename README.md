@@ -1,4 +1,4 @@
-# 🥷 TerminalInNinja
+# 🥷 NinjaInTerminal
 
 A modern SSH client for Windows, inspired by Termius.
 
@@ -26,7 +26,7 @@ A modern SSH client for Windows, inspired by Termius.
 ./gradlew jar
 
 # Run JAR
-java -jar build/libs/TerminalInNinja-1.0.0.jar
+java -jar build/libs/NinjaInTerminal-1.0.0.jar
 ```
 
 ## Project Structure

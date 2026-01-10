@@ -70,7 +70,7 @@ tasks.register<Exec>("createWindowsPortable") {
     
     dependsOn("jar")
     
-    val portableDir = file("$buildDir/portable/TerminalInNinja")
+    val portableDir = file("$buildDir/portable/NinjaInTerminal")
     
     doFirst {
         portableDir.deleteRecursively()
@@ -79,7 +79,7 @@ tasks.register<Exec>("createWindowsPortable") {
     
     commandLine = listOf(
         "jpackage",
-        "--name", "TerminalInNinja",
+        "--name", "NinjaInTerminal",
         "--input", file("build/libs").absolutePath,
         "--main-jar", "ninja-in-terminal-${version}.jar",
         "--main-class", "com.ninja.terminal.app.MainApp",
@@ -99,7 +99,7 @@ tasks.register<Copy>("copyShortcutScripts") {
     
     from("scripts/windows")
     include("*.vbs")
-    into(file("$buildDir/portable/TerminalInNinja"))
+    into(file("$buildDir/portable/NinjaInTerminal"))
 }
 
 // README 복사
@@ -111,7 +111,7 @@ tasks.register<Copy>("copyReadme") {
     
     from("docs")
     include("WINDOWS-README.txt")
-    into(file("$buildDir/portable/TerminalInNinja"))
+    into(file("$buildDir/portable/NinjaInTerminal"))
     rename { "README.txt" }
 }
 
@@ -122,7 +122,7 @@ tasks.register<Zip>("createPortableZip") {
     
     dependsOn("copyShortcutScripts", "copyReadme")
     
-    archiveFileName.set("TerminalInNinja-${version}-windows-x64.zip")
+    archiveFileName.set("NinjaInTerminal-${version}-windows-x64.zip")
     destinationDirectory.set(file("$buildDir/distributions"))
-    from(file("$buildDir/portable/TerminalInNinja"))
+    from(file("$buildDir/portable/NinjaInTerminal"))
 }

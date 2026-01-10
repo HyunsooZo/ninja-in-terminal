@@ -1,4 +1,4 @@
-TerminalInNinja v1.0.0 - Windows Portable
+NinjaInTerminal v1.0.0 - Windows Portable
 ============================================
 
 사용법
@@ -14,7 +14,7 @@ TerminalInNinja v1.0.0 - Windows Portable
    - Tools → Create Desktop Shortcut
 
 3. 앱 실행
-   - TerminalInNinja.exe 더블클릭
+   - NinjaInTerminal.exe 더블클릭
 
 요구사항
 -------
