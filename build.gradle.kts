@@ -24,10 +24,6 @@ javafx {
 }
 
 application {
-    // [중요] module-info.java가 없다면 이 줄은 주석 처리하거나 지워야 합니다.
-    // mainModule.set("com.ninja.terminal")
-
-    // [핵심 수정] MainApp이 아닌 Launcher를 실행하도록 변경
     mainClass.set("com.ninja.terminal.app.Launcher")
 }
 
@@ -50,12 +46,10 @@ dependencies {
 
 tasks.jar {
     manifest {
-        // [핵심 수정] Jar 파일 실행 시에도 Launcher가 시작점이어야 함
         attributes["Main-Class"] = "com.ninja.terminal.app.Launcher"
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
-    // Fat jar 구성 (의존성 포함)
     from({
         configurations.runtimeClasspath.get()
             .filter { it.exists() }
@@ -63,22 +57,18 @@ tasks.jar {
     })
 }
 
-// Windows Portable 패키징
+// Windows Portable 패키징 (통합 버전)
 tasks.register<Exec>("createWindowsPortable") {
     group = "distribution"
     description = "Create Windows portable package with jpackage"
 
     dependsOn("jar")
 
-    // [수정됨] 일관된 네이밍 사용 (NinjaInTerminal)
     val portableDir = file("$buildDir/portable/NinjaInTerminal")
 
     doFirst {
-        // [중요] jpackage 실행 전 기존 폴더를 깨끗하게 삭제
+        // 기존 폴더가 있다면 삭제 (jpackage 충돌 방지)
         portableDir.deleteRecursively()
-
-        // [핵심 수정] mkdirs() 삭제함.
-        // jpackage는 대상 폴더가 없어야 자동으로 생성하며, 이미 있으면 에러가 발생함.
     }
 
     commandLine = listOf(
@@ -88,35 +78,30 @@ tasks.register<Exec>("createWindowsPortable") {
         "--main-jar", "ninja-in-terminal-${version}.jar",
         "--main-class", "com.ninja.terminal.app.MainApp",
         "--type", "app-image",
-        "--dest", file("$buildDir/portable").absolutePath, // jpackage가 여기에 NinjaInTerminal 폴더를 만듦
+        "--dest", file("$buildDir/portable").absolutePath,
         "--icon", file("src/main/resources/images/ninja-exe-icon.ico").absolutePath,
         "--win-console"
     )
-}
 
-// 단축아이콘 생성 스크립트 복사
-tasks.register<Copy>("copyShortcutScripts") {
-    group = "distribution"
-    description = "Copy shortcut creation scripts to portable package"
+    //  jpackage 완료 후, 같은 태스크 안에서 파일 복사를 수행
+    doLast {
+        println("Copying additional files to portable directory...")
 
-    dependsOn("createWindowsPortable")
+        // 1. 스크립트 복사
+        project.copy {
+            from("scripts/windows")
+            include("*.vbs")
+            into(portableDir)
+        }
 
-    from("scripts/windows")
-    include("*.vbs")
-    into(file("$buildDir/portable/NinjaInTerminal"))
-}
-
-// README 복사
-tasks.register<Copy>("copyReadme") {
-    group = "distribution"
-    description = "Copy README to portable package"
-
-    dependsOn("createWindowsPortable")
-
-    from("docs")
-    include("WINDOWS-README.txt")
-    into(file("$buildDir/portable/NinjaInTerminal"))
-    rename { "README.txt" }
+        // 2. README 복사
+        project.copy {
+            from("docs")
+            include("WINDOWS-README.txt")
+            into(portableDir)
+            rename { "README.txt" }
+        }
+    }
 }
 
 // ZIP 파일 생성
@@ -124,12 +109,12 @@ tasks.register<Zip>("createPortableZip") {
     group = "distribution"
     description = "Create portable ZIP package"
 
-    dependsOn("copyShortcutScripts", "copyReadme")
+    dependsOn("createWindowsPortable")
 
     archiveFileName.set("NinjaInTerminal-${version}-windows-x64.zip")
     destinationDirectory.set(file("$buildDir/distributions"))
 
-    // portable 폴더 안의 내용을 NinjaInTerminal이라는 최상위 폴더로 감싸서 압축
+    // portable 폴더 내용을 ZIP으로 압축
     from(file("$buildDir/portable")) {
         include("NinjaInTerminal/**")
     }
