@@ -178,15 +178,48 @@ public class SftpService {
     }
 
     /**
-     * Delete a directory (must be empty)
+     * Delete a directory recursively (removes all contents)
      */
     public void deleteDirectory(String path) throws SftpException {
         if (sftpChannel == null || !sftpChannel.isConnected()) {
             throw new IllegalStateException("SFTP channel is not connected");
         }
 
+        deleteDirectoryRecursive(path);
+        log.info("Deleted directory recursively: {}", path);
+    }
+
+    /**
+     * Recursively delete directory and all its contents
+     */
+    private void deleteDirectoryRecursive(String path) throws SftpException {
+        // List all files and subdirectories
+        @SuppressWarnings("unchecked")
+        Vector<ChannelSftp.LsEntry> entries = sftpChannel.ls(path);
+
+        for (ChannelSftp.LsEntry entry : entries) {
+            String filename = entry.getFilename();
+
+            // Skip . and ..
+            if (".".equals(filename) || "..".equals(filename)) {
+                continue;
+            }
+
+            String fullPath = path.endsWith("/") ? path + filename : path + "/" + filename;
+
+            if (entry.getAttrs().isDir()) {
+                // Recursively delete subdirectory
+                deleteDirectoryRecursive(fullPath);
+            } else {
+                // Delete file
+                sftpChannel.rm(fullPath);
+                log.debug("Deleted file: {}", fullPath);
+            }
+        }
+
+        // Delete the empty directory itself
         sftpChannel.rmdir(path);
-        log.info("Deleted directory: {}", path);
+        log.debug("Deleted empty directory: {}", path);
     }
 
     /**

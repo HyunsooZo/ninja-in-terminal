@@ -36,6 +36,7 @@ public class TerminalTabController implements Initializable {
     private SshService sshService;
     private JediTermWidget terminalWidget;
     private TtyConnector ttyConnector;
+    private Runnable onConnectionFailed;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -61,6 +62,11 @@ public class TerminalTabController implements Initializable {
                     String detailedError = getDetailedErrorMessage(e);
                     connectionInfo.setText("Connection failed: " + detailedError);
                     connectionInfo.setStyle("-fx-text-fill: #ff6b6b; -fx-font-weight: bold;");
+
+                    // Call callback to close tab if configured
+                    if (onConnectionFailed != null) {
+                        onConnectionFailed.run();
+                    }
                 });
             }
         }).start();
@@ -196,5 +202,13 @@ public class TerminalTabController implements Initializable {
      */
     public boolean isConnected() {
         return ttyConnector != null && ttyConnector.isConnected();
+    }
+
+    /**
+     * Set callback to be called when connection fails
+     * @param callback Runnable to execute on connection failure
+     */
+    public void setOnConnectionFailed(Runnable callback) {
+        this.onConnectionFailed = callback;
     }
 }

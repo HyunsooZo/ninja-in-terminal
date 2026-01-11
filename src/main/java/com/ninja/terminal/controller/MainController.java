@@ -3,6 +3,7 @@ package com.ninja.terminal.controller;
 import com.ninja.terminal.model.HostGroup;
 import com.ninja.terminal.model.HostInfo;
 import com.ninja.terminal.service.ConfigService;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -161,34 +162,39 @@ public class MainController implements Initializable {
     private void setupContextMenu() {
         if (hostTree == null) return;
 
-        ContextMenu contextMenu = new ContextMenu();
-
-        MenuItem connectItem = new MenuItem("Connect");
-        connectItem.setOnAction(e -> {
+        // Dynamic context menu based on selection
+        hostTree.setOnContextMenuRequested(event -> {
             TreeItem<Object> selected = hostTree.getSelectionModel().getSelectedItem();
-            if (selected != null && selected.getValue() instanceof HostInfo host) {
-                connectToHost(host);
-            }
-        });
+            if (selected == null || selected.getValue() == null) return;
 
-        MenuItem editItem = new MenuItem("Edit");
-        editItem.setOnAction(e -> {
-            TreeItem<Object> selected = hostTree.getSelectionModel().getSelectedItem();
-            if (selected != null && selected.getValue() instanceof HostInfo host) {
-                editHost(host);
-            }
-        });
+            ContextMenu contextMenu = new ContextMenu();
+            Object value = selected.getValue();
 
-        MenuItem deleteItem = new MenuItem("Delete");
-        deleteItem.setOnAction(e -> {
-            TreeItem<Object> selected = hostTree.getSelectionModel().getSelectedItem();
-            if (selected != null && selected.getValue() instanceof HostInfo host) {
-                deleteHost(host);
-            }
-        });
+            if (value instanceof HostInfo host) {
+                // Host context menu
+                MenuItem connectItem = new MenuItem("Connect");
+                connectItem.setOnAction(e -> connectToHost(host));
 
-        contextMenu.getItems().addAll(connectItem, new SeparatorMenuItem(), editItem, deleteItem);
-        hostTree.setContextMenu(contextMenu);
+                MenuItem editItem = new MenuItem("Edit");
+                editItem.setOnAction(e -> editHost(host));
+
+                MenuItem deleteItem = new MenuItem("Delete");
+                deleteItem.setOnAction(e -> deleteHost(host));
+
+                contextMenu.getItems().addAll(connectItem, new SeparatorMenuItem(), editItem, deleteItem);
+            } else if (value instanceof HostGroup group) {
+                // Group context menu
+                MenuItem renameItem = new MenuItem("Rename");
+                renameItem.setOnAction(e -> renameGroup(group));
+
+                MenuItem deleteItem = new MenuItem("Delete Group");
+                deleteItem.setOnAction(e -> deleteGroup(group));
+
+                contextMenu.getItems().addAll(renameItem, deleteItem);
+            }
+
+            contextMenu.show(hostTree, event.getScreenX(), event.getScreenY());
+        });
     }
 
     private void setupCommandPalette() {
@@ -333,7 +339,6 @@ public class MainController implements Initializable {
             VBox terminalContent = loader.load();
 
             TerminalTabController controller = loader.getController();
-            controller.connect(host);
 
             Tab tab = new Tab(host.getName() != null ? host.getName() : host.getHostname());
             tab.setContent(terminalContent);
@@ -342,10 +347,28 @@ public class MainController implements Initializable {
             // Store controller reference in tab properties for later access
             tab.setUserData(controller);
 
+            // Set callback to close tab on connection failure
+            controller.setOnConnectionFailed(() -> {
+                Platform.runLater(() -> {
+                    // Wait a bit to show error message before closing
+                    new Thread(() -> {
+                        try {
+                            Thread.sleep(3000); // Show error for 3 seconds
+                            Platform.runLater(() -> terminalTabs.getTabs().remove(tab));
+                        } catch (InterruptedException ex) {
+                            log.warn("Interrupted while waiting to close failed tab", ex);
+                        }
+                    }).start();
+                });
+            });
+
             terminalTabs.getTabs().add(tab);
             terminalTabs.getSelectionModel().select(tab);
 
-            statusLabel.setText("Connected to " + host.getHostname());
+            // Start connection in background
+            controller.connect(host);
+
+            statusLabel.setText("Connecting to " + host.getHostname());
 
         } catch (IOException e) {
             log.error("Failed to create terminal tab", e);
@@ -398,6 +421,56 @@ public class MainController implements Initializable {
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 configService.deleteHost(host.getId());
+                loadHosts();
+            }
+        });
+    }
+
+    private void renameGroup(HostGroup group) {
+        TextInputDialog dialog = new TextInputDialog(group.getName());
+        dialog.setTitle("Rename Group");
+        dialog.setHeaderText("Rename group");
+        dialog.setContentText("New name:");
+        dialog.getDialogPane().getStylesheets().add(
+                getClass().getResource("/css/dark-theme.css").toExternalForm()
+        );
+
+        dialog.showAndWait().ifPresent(newName -> {
+            if (!newName.trim().isEmpty() && !newName.equals(group.getName())) {
+                group.setName(newName.trim());
+                configService.save();
+                loadHosts();
+            }
+        });
+    }
+
+    private void deleteGroup(HostGroup group) {
+        // Count hosts in this group
+        long hostCount = configService.getHosts().stream()
+                .filter(h -> group.getId().equals(h.getGroupId()))
+                .count();
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete Group");
+        alert.setHeaderText("Delete group '" + group.getName() + "'?");
+
+        if (hostCount > 0) {
+            alert.setContentText(
+                    "This group contains " + hostCount + " host(s).\n" +
+                    "The hosts will be moved to ungrouped.\n\n" +
+                    "This action cannot be undone."
+            );
+        } else {
+            alert.setContentText("This action cannot be undone.");
+        }
+
+        alert.getDialogPane().getStylesheets().add(
+                getClass().getResource("/css/dark-theme.css").toExternalForm()
+        );
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                configService.deleteGroup(group.getId());
                 loadHosts();
             }
         });

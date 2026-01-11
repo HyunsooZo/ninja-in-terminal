@@ -92,6 +92,10 @@ public class SnippetController implements Initializable {
                 } else if (item instanceof SnippetPackage pkg) {
                     setText(pkg.getIcon() + " " + pkg.getName());
                     setStyle("-fx-text-fill: " + pkg.getColor() + "; -fx-font-weight: bold;");
+                } else if (item instanceof String str) {
+                    // Handle "All Snippets" or other string items
+                    setText("📋 " + str);
+                    setStyle("-fx-text-fill: #80cbc4; -fx-font-weight: bold;");
                 }
             }
         });
@@ -101,6 +105,31 @@ public class SnippetController implements Initializable {
                 filterSnippetsByPackage(pkg.getId());
             } else {
                 showAllSnippets();
+            }
+        });
+
+        // Add context menu for packages
+        setupPackageContextMenu();
+    }
+
+    private void setupPackageContextMenu() {
+        snippetTree.setOnContextMenuRequested(event -> {
+            TreeItem<Object> selected = snippetTree.getSelectionModel().getSelectedItem();
+            if (selected == null || selected.getValue() == null) return;
+
+            Object value = selected.getValue();
+
+            if (value instanceof SnippetPackage pkg) {
+                ContextMenu contextMenu = new ContextMenu();
+
+                MenuItem editItem = new MenuItem("Edit");
+                editItem.setOnAction(e -> showPackageDialog(pkg));
+
+                MenuItem deleteItem = new MenuItem("Delete Package");
+                deleteItem.setOnAction(e -> deletePackage(pkg));
+
+                contextMenu.getItems().addAll(editItem, deleteItem);
+                contextMenu.show(snippetTree, event.getScreenX(), event.getScreenY());
             }
         });
     }
@@ -342,21 +371,35 @@ public class SnippetController implements Initializable {
             // Connect to host
             mainController.connectToHost(host);
 
-            // Wait a bit for connection, then execute
+            // Poll for connection status instead of fixed wait
             new Thread(() -> {
-                try {
-                    Thread.sleep(2000); // Wait 2 seconds for connection
-                    Platform.runLater(() -> {
+                int maxAttempts = 100; // 100 attempts * 100ms = 10 seconds max
+                int attempts = 0;
+
+                while (attempts < maxAttempts) {
+                    try {
+                        Thread.sleep(100); // Check every 100ms
+
                         TerminalTabController terminal = mainController.getActiveTerminalController();
                         if (terminal != null && terminal.isConnected()) {
-                            executeInTerminal(terminal);
-                        } else {
-                            showAlert("Connection Failed", "Could not connect to host or connection not ready.");
+                            // Connection successful, execute command
+                            Platform.runLater(() -> executeInTerminal(terminal));
+                            return;
                         }
-                    });
-                } catch (InterruptedException e) {
-                    log.error("Interrupted while waiting for connection", e);
+
+                        attempts++;
+                    } catch (InterruptedException e) {
+                        log.error("Interrupted while waiting for connection", e);
+                        return;
+                    }
                 }
+
+                // Timeout after max attempts
+                Platform.runLater(() ->
+                    showAlert("Connection Timeout",
+                        "Could not connect to host within 10 seconds.\n" +
+                        "The connection might still be in progress.")
+                );
             }).start();
         });
     }
@@ -427,6 +470,38 @@ public class SnippetController implements Initializable {
                     existingPackage.setName(name.trim());
                     snippetService.updatePackage(existingPackage);
                 }
+                loadSnippets();
+            }
+        });
+    }
+
+    private void deletePackage(SnippetPackage pkg) {
+        // Count snippets in this package
+        long snippetCount = snippetService.getSnippets().stream()
+                .filter(s -> pkg.getId().equals(s.getPackageId()))
+                .count();
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete Package");
+        alert.setHeaderText("Delete package '" + pkg.getName() + "'?");
+
+        if (snippetCount > 0) {
+            alert.setContentText(
+                    "This package contains " + snippetCount + " snippet(s).\n" +
+                    "The snippets will be moved to ungrouped.\n\n" +
+                    "This action cannot be undone."
+            );
+        } else {
+            alert.setContentText("This action cannot be undone.");
+        }
+
+        alert.getDialogPane().getStylesheets().add(
+                getClass().getResource("/css/dark-theme.css").toExternalForm()
+        );
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                snippetService.deletePackage(pkg.getId());
                 loadSnippets();
             }
         });

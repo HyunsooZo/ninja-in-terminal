@@ -42,14 +42,22 @@ src/main/java/com/ninja/terminal/
 
 ## Configuration
 
-Config is stored at `~/.terminalinninja/config.json`
+Config is stored at `~/.ninja-in-terminal/config.json`
+
+## Completed Features
+
+- ✅ JediTerm integration for proper terminal emulation
+- ✅ SFTP file transfer
+- ✅ Snippet management with packages
+- ✅ Command Palette (CTRL+J)
+- ✅ Settings UI (fonts, themes, SSH config)
+- ✅ Startup command execution
 
 ## TODO
 
-- [ ] JediTerm integration for proper terminal emulation
-- [ ] SFTP file transfer
-- [ ] Port forwarding
-- [ ] Snippet management
+- [ ] Port forwarding (local, remote, dynamic)
+- [ ] Workspaces (split view, focus mode)
+- [ ] Keychain (SSH key management)
 - [ ] Import/Export hosts
 
 ## License
